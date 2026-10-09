@@ -50,7 +50,16 @@
 <div class="card"><h2 style="margin-top:0">Privacidad y borrado</h2><p class="muted small">Exporta una copia antes de borrar los datos.</p><button class="danger" id="clearData">Borrar todos los datos</button></div>
 </section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL = 'https://mgonzalezldsp-blip.github.io/bitacora-gym./';
+const SUPABASE_KEY = 'sb_publishable_FiZZJrXX6Pna1RTiny9y1g_IDsMJHY-';
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
 const KEY='bitacoraGym.v1';
 const defaults=[
  ['Press de banca','48'],['Press inclinado con mancuernas','48'],['Pec deck','48'],['Curl de bíceps con mancuernas','48'],['Extensión de tríceps sobre cabeza','48'],['Remo sentado','48'],['Jalón al pecho','48'],['Sentadilla','72'],['Peso muerto rumano','72'],['Elevaciones laterales','48'],['Abdominales','24'],['Extensiones de espalda baja','48'],['Giro con disco sobre la cabeza','48']
