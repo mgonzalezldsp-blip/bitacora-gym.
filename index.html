@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101510">
+<meta name="description" content="Registra tus entrenamientos y controla la recuperación de cada ejercicio.">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Bitácora Gym</title>
+<style>
+:root{--bg:#101510;--panel:#1b231c;--panel2:#242e25;--text:#f3f5f1;--muted:#aeb8ae;--accent:#b8f36b;--danger:#ff8b8b;--line:#354136}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}header{padding:24px 18px 14px;max-width:1000px;margin:auto}h1{font-size:1.65rem;margin:0}header p{margin:6px 0;color:var(--muted)}main{max-width:1000px;margin:auto;padding:0 14px 40px}.tabs{display:flex;gap:8px;overflow:auto;margin:10px 0 18px}.tab,button{border:0;border-radius:12px;padding:11px 14px;font:inherit;font-weight:650;cursor:pointer}.tab{background:var(--panel2);color:var(--muted);white-space:nowrap}.tab.active,button.primary{background:var(--accent);color:#15200f}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px;margin:9px 0}.field label{font-size:.9rem;color:var(--muted)}input,select,textarea{width:100%;background:#111812;color:var(--text);border:1px solid #465447;border-radius:10px;padding:12px;font:inherit;min-width:0}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#4a2222;color:#ffdede}.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.muted{color:var(--muted)}.pill{display:inline-block;border-radius:999px;padding:4px 9px;background:var(--panel2);font-size:.82rem}.ready{color:var(--accent)}.locked{color:var(--danger)}.setrow{display:grid;grid-template-columns:42px 1fr 1fr;gap:8px;align-items:center;margin:7px 0}.setrow span{color:var(--muted);text-align:center}.setrow input{padding:10px}.exercise-card h3{margin:0 0 5px}.exercise-card p{margin:5px 0}.hidden{display:none!important}.empty{padding:24px;text-align:center;color:var(--muted)}.small{font-size:.88rem}.history-item{border-top:1px solid var(--line);padding:12px 0}.history-item:first-child{border-top:0}.notice{background:#283522;border-radius:12px;padding:12px;color:#d8edc8}.foot{font-size:.8rem;color:var(--muted);padding:12px 2px}@media(max-width:560px){.grid{grid-template-columns:1fr}.card{padding:14px}.setrow{grid-template-columns:34px 1fr 1fr}header{padding-top:18px}}
+</style>
+</head>
+<body>
+<header><h1>🏋️ Bitácora Gym</h1><p>Registra tus series. Controla tu recuperación.</p></header>
+<main>
+<div class="tabs" role="tablist">
+<button class="tab active" data-tab="train">Entrenar</button><button class="tab" data-tab="exercises">Ejercicios</button><button class="tab" data-tab="history">Historial</button><button class="tab" data-tab="settings">Datos y ajustes</button>
+</div>
+<section id="train">
+<div class="card">
+<h2 style="margin-top:0">Registrar entrenamiento</h2>
+<div class="field"><label for="exerciseSelect">Selecciona un ejercicio</label><select id="exerciseSelect"></select></div>
+<div id="exerciseStatus" class="notice small">Selecciona un ejercicio para ver su estado.</div>
+<div class="grid">
+<div class="field"><label for="sessionDate">Fecha y hora</label><input id="sessionDate" type="datetime-local"></div>
+<div class="field"><label for="setCount">Cantidad de series</label><input id="setCount" type="number" min="1" max="20" value="4"></div>
+</div>
+<div id="sets"></div>
+<div class="field"><label for="notes">Notas (opcional)</label><input id="notes" placeholder="Ej. buena técnica, última serie al fallo"></div>
+<button id="saveWorkout" class="primary" style="width:100%">Guardar entrenamiento</button>
+<p class="foot">El bloqueo comienza al guardar la sesión. Cada ejercicio tiene su propio tiempo de recuperación.</p>
+</div>
+<div class="card"><h2 style="margin-top:0">Estado de recuperación</h2><div id="recoveryList"></div></div>
+</section>
+<section id="exercises" class="hidden">
+<div class="card">
+<h2 style="margin-top:0">Añadir ejercicio</h2>
+<div class="grid">
+<div class="field"><label for="newName">Nombre del ejercicio</label><input id="newName" placeholder="Ej. Press de banca"></div>
+<div class="field"><label for="newRecovery">Descanso (horas)</label><input id="newRecovery" type="number" min="0" max="720" value="48"></div>
+</div>
+<button class="primary" id="addExercise">Añadir ejercicio</button>
+</div><div id="exerciseList"></div>
+</section>
+<section id="history" class="hidden"><div class="card"><div class="row"><h2 style="margin:0;flex:2">Historial</h2><button class="secondary" id="exportCsv">Exportar CSV</button></div><div id="historyList"></div></div></section>
+<section id="settings" class="hidden">
+<div class="card"><h2 style="margin-top:0">Tus datos</h2><p class="muted small">Esta versión guarda los datos en este navegador y dispositivo. No se sincronizan automáticamente entre celular y computador.</p><div class="row"><button class="secondary" id="backup">Descargar copia de seguridad</button><label class="secondary" style="text-align:center;padding:11px;border-radius:12px;cursor:pointer">Importar copia<input id="restoreFile" type="file" accept=".json,application/json" style="display:none"></label></div></div>
+<div class="card"><h2 style="margin-top:0">Privacidad y borrado</h2><p class="muted small">Exporta una copia antes de borrar los datos.</p><button class="danger" id="clearData">Borrar todos los datos</button></div>
+</section>
+</main>
+<script>
+const KEY='bitacoraGym.v1';
+const defaults=[
+ ['Press de banca','48'],['Press inclinado con mancuernas','48'],['Pec deck','48'],['Curl de bíceps con mancuernas','48'],['Extensión de tríceps sobre cabeza','48'],['Remo sentado','48'],['Jalón al pecho','48'],['Sentadilla','72'],['Peso muerto rumano','72'],['Elevaciones laterales','48'],['Abdominales','24'],['Extensiones de espalda baja','48'],['Giro con disco sobre la cabeza','48']
+].map((x,i)=>({id:'e'+(i+1),name:x[0],recoveryHours:Number(x[1])}));
+let db=load();
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.exercises)&&Array.isArray(d.workouts))return d}catch(e){}return {exercises:defaults,workouts:[]}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function nowLocal(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
+function fmt(date){return new Date(date).toLocaleString('es-CL',{dateStyle:'medium',timeStyle:'short'})}
+function lastWorkout(id){return db.workouts.filter(w=>w.exerciseId===id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0]}
+function unlockAt(ex){const last=lastWorkout(ex.id);return last?new Date(new Date(last.date).getTime()+ex.recoveryHours*3600000):null}
+function isLocked(ex){const u=unlockAt(ex);return u&&u>Date.now()}
+function remaining(ex){const ms=unlockAt(ex)-Date.now();if(ms<=0)return 'Disponible';const h=Math.floor(ms/3600000),d=Math.floor(h/24),m=Math.floor((ms%3600000)/60000);return d?`${d} d ${h%24} h restantes`:`${h} h ${m} min restantes`}
+function selected(){return db.exercises.find(e=>e.id===document.querySelector('#exerciseSelect').value)}
+function renderSelect(){const sel=document.querySelector('#exerciseSelect'),old=sel.value;sel.innerHTML=db.exercises.map(e=>`<option value="${e.id}">${esc(e.name)}${isLocked(e)?' — en recuperación':''}</option>`).join('');if(db.exercises.some(e=>e.id===old))sel.value=old;renderStatus()}
+function renderStatus(){const ex=selected(),box=document.querySelector('#exerciseStatus'),btn=document.querySelector('#saveWorkout');if(!ex){box.textContent='Añade un ejercicio en la pestaña Ejercicios.';btn.disabled=true;return}const last=lastWorkout(ex.id);box.className='notice small';if(isLocked(ex)){box.innerHTML=`<strong class="locked">Ejercicio en recuperación</strong><br>${esc(ex.name)} · Descanso configurado: ${ex.recoveryHours} h<br><strong>${remaining(ex)}</strong><br>Disponible desde ${fmt(unlockAt(ex))}`;btn.disabled=true;btn.style.opacity='.5'}else{box.innerHTML=`<strong class="ready">Ejercicio disponible</strong><br>${esc(ex.name)} · Recuperación configurada: ${ex.recoveryHours} h${last?`<br>Último entrenamiento: ${fmt(last.date)}`:'<br>Aún no tienes sesiones guardadas para este ejercicio.'}`;btn.disabled=false;btn.style.opacity='1'}}
+function renderSets(){let n=Math.max(1,Math.min(20,Number(document.querySelector('#setCount').value)||1));const prior=[...document.querySelectorAll('.setrow')].map(r=>({reps:r.querySelector('.reps')?.value||'10',weight:r.querySelector('.weight')?.value||'0'}));document.querySelector('#sets').innerHTML=Array.from({length:n},(_,i)=>{let p=prior[i]||{reps:'10',weight:'0'};return `<div class="setrow"><span>${i+1}</span><input class="reps" aria-label="Repeticiones serie ${i+1}" type="number" min="0" placeholder="Reps" value="${esc(p.reps)}"><input class="weight" aria-label="Peso serie ${i+1}" type="number" min="0" step=".25" placeholder="Peso kg" value="${esc(p.weight)}"></div>`}).join('')}
+function renderRecovery(){const box=document.querySelector('#recoveryList');if(!db.exercises.length){box.innerHTML='<p class="empty">Añade tu primer ejercicio.</p>';return}box.innerHTML=db.exercises.map(ex=>{const last=lastWorkout(ex.id),locked=isLocked(ex);return `<div class="history-item"><strong>${esc(ex.name)}</strong><p class="small ${locked?'locked':'ready'}">${locked?'🔒 En recuperación':'✓ Disponible'} · ${locked?remaining(ex):`Descanso: ${ex.recoveryHours} h`}</p>${last?`<p class="muted small">Última sesión: ${fmt(last.date)}</p>`:'<p class="muted small">Sin entrenamientos registrados</p>'}</div>`}).join('')}
+function renderExercises(){document.querySelector('#exerciseList').innerHTML=db.exercises.map(ex=>`<div class="card exercise-card"><div class="row"><div><h3>${esc(ex.name)}</h3><p class="muted small">Recuperación: ${ex.recoveryHours} horas</p>${isLocked(ex)?`<p class="locked small">Bloqueado · ${remaining(ex)}</p>`:''}</div><button class="secondary" data-edit="${ex.id}">Editar</button><button class="danger" data-delete="${ex.id}">Eliminar</button></div></div>`).join('')||'<div class="empty">Todavía no hay ejercicios.</div>'}
+function renderHistory(){let arr=[...db.workouts].sort((a,b)=>new Date(b.date)-new Date(a.date));document.querySelector('#historyList').innerHTML=arr.length?arr.map(w=>{const ex=db.exercises.find(e=>e.id===w.exerciseId);return `<div class="history-item"><div class="row"><strong>${esc(ex?.name||w.exerciseName||'Ejercicio eliminado')}</strong><span class="muted small">${fmt(w.date)}</span></div><p>${w.sets.map((s,i)=>`Serie ${i+1}: ${s.reps} reps × ${s.weight} kg`).join(' · ')}</p>${w.notes?`<p class="muted small">${esc(w.notes)}</p>`:''}<button class="danger small" data-workout-delete="${w.id}">Eliminar registro</button></div>`}).join(''):'<div class="empty">Tu historial aparecerá aquí cuando guardes el primer entrenamiento.</div>'}
+function render(){renderSelect();renderSets();renderRecovery();renderExercises();renderHistory()}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['train','exercises','history','settings'].forEach(id=>document.getElementById(id).classList.toggle('hidden',id!==b.dataset.tab));render()}));
+document.querySelector('#exerciseSelect').addEventListener('change',renderStatus);
+document.querySelector('#setCount').addEventListener('change',renderSets);
+document.querySelector('#addExercise').addEventListener('click',()=>{const name=document.querySelector('#newName').value.trim(),hours=Number(document.querySelector('#newRecovery').value);if(!name)return alert('Escribe el nombre del ejercicio.');if(!Number.isFinite(hours)||hours<0||hours>720)return alert('Configura entre 0 y 720 horas de descanso.');if(db.exercises.some(e=>e.name.toLowerCase()===name.toLowerCase()))return alert('Ese ejercicio ya existe.');db.exercises.push({id:'e'+Date.now(),name,recoveryHours:hours});persist();document.querySelector('#newName').value='';render();document.querySelector('#exerciseSelect').value=db.exercises.at(-1).id;renderStatus()});
+document.querySelector('#exerciseList').addEventListener('click',e=>{const id=e.target.dataset.edit;if(id){const ex=db.exercises.find(x=>x.id===id);const name=prompt('Nombre del ejercicio:',ex.name);if(name===null)return;const hours=prompt('Horas de recuperación (0 a 720):',ex.recoveryHours);if(hours===null)return;const h=Number(hours);if(!name.trim()||!Number.isFinite(h)||h<0||h>720)return alert('Nombre u horas no válidos.');ex.name=name.trim();ex.recoveryHours=h;persist();render()}const del=e.target.dataset.delete;if(del){const ex=db.exercises.find(x=>x.id===del);if(confirm(`¿Eliminar "${ex.name}" de la lista? El historial guardado se conservará.`)){db.exercises=db.exercises.filter(x=>x.id!==del);persist();render()}}});
+document.querySelector('#saveWorkout').addEventListener('click',()=>{const ex=selected();if(!ex)return;if(isLocked(ex))return alert('Este ejercicio aún está en recuperación.');const sets=[...document.querySelectorAll('.setrow')].map(r=>({reps:Number(r.querySelector('.reps').value),weight:Number(r.querySelector('.weight').value)}));if(sets.some(s=>!Number.isFinite(s.reps)||s.reps<0||!Number.isFinite(s.weight)||s.weight<0))return alert('Revisa las repeticiones y los pesos.');const date=document.querySelector('#sessionDate').value;if(!date||Number.isNaN(new Date(date).getTime()))return alert('Ingresa una fecha y hora válida.');if(new Date(date)>new Date())return alert('La fecha no puede estar en el futuro.');db.workouts.push({id:'w'+Date.now(),exerciseId:ex.id,exerciseName:ex.name,date:new Date(date).toISOString(),sets,notes:document.querySelector('#notes').value.trim()});persist();document.querySelector('#notes').value='';document.querySelector('#sessionDate').value=nowLocal();render();alert('Entrenamiento guardado. Se inició el tiempo de recuperación de este ejercicio.')});
+document.querySelector('#historyList').addEventListener('click',e=>{const id=e.target.dataset.workoutDelete;if(id&&confirm('¿Eliminar este registro del historial? El tiempo de recuperación se recalculará.')){db.workouts=db.workouts.filter(w=>w.id!==id);persist();render()}});
+function download(name,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+document.querySelector('#backup').addEventListener('click',()=>download('bitacora-gym-copia.json',JSON.stringify(db,null,2),'application/json'));
+document.querySelector('#exportCsv').addEventListener('click',()=>{const rows=[['fecha','ejercicio','serie','repeticiones','peso_kg','notas']];db.workouts.forEach(w=>w.sets.forEach((s,i)=>rows.push([w.date,w.exerciseName||db.exercises.find(e=>e.id===w.exerciseId)?.name||'',i+1,s.reps,s.weight,w.notes||''])));const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');download('historial-gimnasio.csv','\ufeff'+csv,'text/csv;charset=utf-8')});
+document.querySelector('#restoreFile').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const d=JSON.parse(await file.text());if(!Array.isArray(d.exercises)||!Array.isArray(d.workouts))throw Error();if(confirm('Importar reemplazará los datos actuales. ¿Continuar?')){db=d;persist();render();alert('Copia importada correctamente.')}}catch(err){alert('El archivo no es una copia válida de Bitácora Gym.')}e.target.value=''});
+document.querySelector('#clearData').addEventListener('click',()=>{if(confirm('¿Seguro? Se borrarán todos los ejercicios y entrenamientos de este navegador. Esta acción no se puede deshacer.')){db={exercises:defaults.map(e=>({...e})),workouts:[]};persist();render()}});
+document.querySelector('#sessionDate').value=nowLocal();render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+setInterval(()=>{renderStatus();renderRecovery();renderExercises()},60000);
+</script>
+</body></html>

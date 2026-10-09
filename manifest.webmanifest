@@ -1,0 +1,12 @@
+{
+  "name": "Bitácora Gym",
+  "short_name": "Bitácora Gym",
+  "description": "Registro de ejercicios y control de recuperación individual.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#101510",
+  "theme_color": "#101510",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}

@@ -1,0 +1,19 @@
+BITÁCORA GYM — versión inicial
+
+CONTENIDO
+- index.html: aplicación.
+- manifest.webmanifest, sw.js, icon.svg: soporte PWA instalable.
+
+CÓMO PROBAR
+1. Abre index.html en un navegador moderno. Los registros se guardan localmente en ese navegador.
+2. Para instalarla como PWA y usar el modo sin conexión, publica estos archivos en un hosting HTTPS estático (por ejemplo, GitHub Pages o Netlify).
+3. Usa “Descargar copia de seguridad” periódicamente. Los datos locales no se sincronizan entre dispositivos.
+
+FUNCIONES
+- Ejercicios iniciales y creación/edición de ejercicios.
+- Series, repeticiones, peso, notas, fecha y hora.
+- Bloqueo individual hasta que se cumplan las horas configuradas desde la última sesión guardada.
+- Historial, exportación CSV y copia de seguridad/importación JSON.
+
+LIMITACIÓN IMPORTANTE
+Esta versión usa localStorage del navegador como almacenamiento local, no una base de datos en la nube. Si borras los datos del navegador, podrías perder los registros; exporta copias de seguridad. Para sincronizar entre celular y computador habría que conectar una base de datos remota y añadir autenticación.
