@@ -116,7 +116,7 @@ document.querySelector('#sessionDate').value=nowLocal();render();
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 setInterval(()=>{renderStatus();renderRecovery();renderExercises()},60000);
 
-async function registerGymUser() {
+window.registerGymUser = async function() {
   const email = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
   const message = document.getElementById('authMessage');
