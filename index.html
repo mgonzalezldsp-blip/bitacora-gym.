@@ -12,6 +12,23 @@
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}header{padding:24px 18px 14px;max-width:1000px;margin:auto}h1{font-size:1.65rem;margin:0}header p{margin:6px 0;color:var(--muted)}main{max-width:1000px;margin:auto;padding:0 14px 40px}.tabs{display:flex;gap:8px;overflow:auto;margin:10px 0 18px}.tab,button{border:0;border-radius:12px;padding:11px 14px;font:inherit;font-weight:650;cursor:pointer}.tab{background:var(--panel2);color:var(--muted);white-space:nowrap}.tab.active,button.primary{background:var(--accent);color:#15200f}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px;margin:9px 0}.field label{font-size:.9rem;color:var(--muted)}input,select,textarea{width:100%;background:#111812;color:var(--text);border:1px solid #465447;border-radius:10px;padding:12px;font:inherit;min-width:0}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#4a2222;color:#ffdede}.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.muted{color:var(--muted)}.pill{display:inline-block;border-radius:999px;padding:4px 9px;background:var(--panel2);font-size:.82rem}.ready{color:var(--accent)}.locked{color:var(--danger)}.setrow{display:grid;grid-template-columns:42px 1fr 1fr;gap:8px;align-items:center;margin:7px 0}.setrow span{color:var(--muted);text-align:center}.setrow input{padding:10px}.exercise-card h3{margin:0 0 5px}.exercise-card p{margin:5px 0}.hidden{display:none!important}.empty{padding:24px;text-align:center;color:var(--muted)}.small{font-size:.88rem}.history-item{border-top:1px solid var(--line);padding:12px 0}.history-item:first-child{border-top:0}.notice{background:#283522;border-radius:12px;padding:12px;color:#d8edc8}.foot{font-size:.8rem;color:var(--muted);padding:12px 2px}@media(max-width:560px){.grid{grid-template-columns:1fr}.card{padding:14px}.setrow{grid-template-columns:34px 1fr 1fr}header{padding-top:18px}}
 </style>
 </head>
+  
+<div id="authBox" style="max-width:420px;margin:40px auto;padding:24px;background:#17231e;color:white;border-radius:16px;font-family:Arial,sans-serif">
+  <h2>Bitácora Gym</h2>
+  <p>Inicia sesión para sincronizar tus entrenamientos.</p>
+
+  <label for="authEmail">Correo electrónico</label>
+  <input id="authEmail" type="email" placeholder="tu@correo.com" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px">
+
+  <label for="authPassword">Contraseña</label>
+  <input id="authPassword" type="password" placeholder="Mínimo 6 caracteres" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px">
+
+  <button type="button" onclick="registerGymUser()" style="padding:12px;margin:4px;border-radius:8px">Crear cuenta</button>
+  <button type="button" onclick="loginGymUser()" style="padding:12px;margin:4px;border-radius:8px">Iniciar sesión</button>
+
+  <p id="authMessage" style="font-size:14px;line-height:1.5"></p>
+</div>
+
 <body>
 <header><h1>🏋️ Bitácora Gym</h1><p>Registra tus series. Controla tu recuperación.</p></header>
 <main>
