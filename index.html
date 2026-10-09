@@ -152,7 +152,7 @@ window.registerGymUser = async function() {
   }
 }
 
-async function loginGymUser() {
+window.loginGymUser = async function() {
   const email = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
   const message = document.getElementById('authMessage');
