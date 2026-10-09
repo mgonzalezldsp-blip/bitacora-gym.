@@ -69,7 +69,7 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://mgonzalezldsp-blip.github.io/bitacora-gym./';
+const SUPABASE_URL = 'https://qfndlwotpmbgjtgfdbfk.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_FiZZJrXX6Pna1RTiny9y1g_IDsMJHY-';
 
 const supabase = window.supabase.createClient(
@@ -114,5 +114,69 @@ document.querySelector('#clearData').addEventListener('click',()=>{if(confirm('�
 document.querySelector('#sessionDate').value=nowLocal();render();
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 setInterval(()=>{renderStatus();renderRecovery();renderExercises()},60000);
+
+async function registerGymUser() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const message = document.getElementById('authMessage');
+
+  if (!email || !password) {
+    message.textContent = 'Ingresa tu correo y contraseña.';
+    return;
+  }
+
+  if (password.length < 6) {
+    message.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+    return;
+  }
+
+  message.textContent = 'Creando cuenta...';
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password
+    });
+
+    if (error) throw error;
+
+    if (data.session) {
+      message.textContent = '¡Cuenta creada! Ya puedes continuar.';
+    } else {
+      message.textContent =
+        'Cuenta creada. Revisa tu correo para confirmar el registro.';
+    }
+  } catch (error) {
+    message.textContent = 'Error: ' + error.message;
+  }
+}
+
+async function loginGymUser() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const message = document.getElementById('authMessage');
+
+  if (!email || !password) {
+    message.textContent = 'Ingresa tu correo y contraseña.';
+    return;
+  }
+
+  message.textContent = 'Iniciando sesión...';
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (error) throw error;
+
+    message.textContent =
+      '¡Sesión iniciada correctamente! Próximo paso: sincronizar tus entrenamientos.';
+  } catch (error) {
+    message.textContent = 'Error: ' + error.message;
+  }
+}
+
 </script>
 </body></html>
