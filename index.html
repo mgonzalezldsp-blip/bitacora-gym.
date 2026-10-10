@@ -2,1769 +2,1253 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0A0A0A">
-  <meta name="description" content="Bitácora Gym: registra tus entrenamientos y controla tu recuperación.">
-  <title>Bitácora Gym</title>
-
-  <style>
-    :root {
-      --bg: #0A0A0A;
-      --panel: #171717;
-      --panel2: #202020;
-      --text: #F5F5F5;
-      --muted: #A3A3A3;
-      --accent: #b8f36b;
-      --danger: #ff8585;
-      --line: #303030;
-      --radius: 16px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    button, input, select, textarea { font: inherit; }
-    button { cursor: pointer; }
-
-    .app {
-      width: min(100%, 1050px);
-      margin: auto;
-      padding: 22px 16px 48px;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .logo {
-      display: grid;
-      place-items: center;
-      width: 48px;
-      height: 48px;
-      flex-shrink: 0;
-      background: var(--accent);
-      color: #101010;
-      border-radius: 15px;
-      font-size: 25px;
-      font-weight: 900;
-    }
-
-    h1 {
-      font-size: clamp(22px, 4vw, 30px);
-      line-height: 1.15;
-      margin: 0;
-      letter-spacing: -0.8px;
-    }
-
-    .subtitle {
-      margin: 5px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .status {
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 700;
-      text-align: right;
-    }
-
-    .tabs {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 7px;
-      padding: 6px;
-      margin-bottom: 20px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: var(--panel);
-    }
-
-    .tab {
-      border: 0;
-      border-radius: 10px;
-      padding: 11px 6px;
-      background: transparent;
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .tab.active {
-      background: var(--accent);
-      color: #101010;
-    }
-
-    .view { display: none; }
-    .view.active { display: block; }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 19px;
-      margin-bottom: 16px;
-      min-width: 0;
-    }
-
-    .panel h2 {
-      margin: 0 0 15px;
-      font-size: 19px;
-      letter-spacing: -0.3px;
-    }
-
-    .panel h3 { margin: 0 0 10px; font-size: 15px; }
-    .muted { color: var(--muted); }
-    .small { font-size: 12px; }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .stat {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      padding: 16px;
-      border-radius: 14px;
-      min-width: 0;
-    }
-
-    .stat-number {
-      font-size: clamp(23px, 4vw, 32px);
-      font-weight: 850;
-      line-height: 1.2;
-      letter-spacing: -1px;
-      overflow-wrap: anywhere;
-    }
-
-    .stat-label {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    .field label, .field-label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      min-width: 0;
-      color: var(--text);
-      background: #101010;
-      border: 1px solid #383838;
-      border-radius: 10px;
-      padding: 11px 12px;
-      outline: none;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px #b8f36b20;
-    }
-
-    input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--accent);
-    }
-
-    input[type="date"], input[type="time"] { color-scheme: dark; }
-    textarea { resize: vertical; min-height: 80px; }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin-top: 15px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px 14px;
-      background: var(--panel2);
-      color: var(--text);
-      font-weight: 750;
-      font-size: 13px;
-    }
-
-    .btn.primary {
-      background: var(--accent);
-      color: #101010;
-      border-color: var(--accent);
-    }
-
-    .btn.danger {
-      color: var(--danger);
-      border-color: #673838;
-    }
-
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    .exercise-card {
-      border: 1px solid var(--line);
-      background: #121212;
-      border-radius: 13px;
-      padding: 14px;
-      margin-bottom: 11px;
-    }
-
-    .exercise-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .exercise-name {
-      font-weight: 800;
-      font-size: 15px;
-      overflow-wrap: anywhere;
-    }
-
-    .exercise-meta {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 4px 9px;
-      font-size: 11px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .pill.ready { color: var(--accent); border-color: #526a35; }
-    .pill.resting { color: #ffd479; border-color: #6b5833; }
-
-    .set-row {
-      display: grid;
-      grid-template-columns: 42px minmax(0, 1fr) minmax(0, 1fr);
-      align-items: end;
-      gap: 9px;
-      margin-top: 10px;
-    }
-
-    .set-number {
-      padding-bottom: 10px;
-      font-weight: 800;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .remove-set {
-      border: 0;
-      background: transparent;
-      color: var(--danger);
-      padding: 5px;
-      font-size: 12px;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 28px 12px;
-      color: var(--muted);
-      border: 1px dashed #383838;
-      border-radius: 12px;
-    }
-
-    .history-item {
-      padding: 15px 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .history-item:last-child { border-bottom: 0; }
-    .history-title { font-weight: 800; margin-bottom: 5px; }
-
-    .history-details {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
-    .message {
-      display: none;
-      border: 1px solid #526a35;
-      color: var(--accent);
-      padding: 11px 13px;
-      border-radius: 10px;
-      margin-bottom: 14px;
-      font-size: 13px;
-    }
-
-    .message.show { display: block; }
-    .message.error { color: var(--danger); border-color: #673838; }
-
-    .divider {
-      height: 1px;
-      background: var(--line);
-      margin: 18px 0;
-    }
-
-    .auth-box {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 15px;
-      background: #121212;
-      margin-bottom: 14px;
-    }
-
-    .muscle-folder {
-      background: #121212;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      margin-bottom: 11px;
-      overflow: hidden;
-    }
-
-    .folder-summary {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 15px;
-      cursor: pointer;
-      list-style: none;
-      user-select: none;
-    }
-
-    .folder-summary::-webkit-details-marker { display: none; }
-
-    .folder-icon {
-      display: grid;
-      place-items: center;
-      width: 42px;
-      height: 42px;
-      flex-shrink: 0;
-      border-radius: 12px;
-      background: #242b1c;
-      color: var(--accent);
-      font-size: 21px;
-    }
-
-    .folder-info { flex: 1; min-width: 0; }
-    .folder-title { font-weight: 850; font-size: 14px; }
-    .folder-count { color: var(--muted); font-size: 11px; margin-top: 3px; }
-
-    .folder-arrow {
-      color: var(--muted);
-      font-size: 17px;
-      transition: transform .18s ease;
-    }
-
-    .muscle-folder[open] .folder-arrow { transform: rotate(90deg); }
-
-    .folder-status {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--accent);
-      white-space: nowrap;
-    }
-
-    .folder-content {
-      padding: 0 12px 5px;
-      border-top: 1px solid var(--line);
-    }
-
-    .folder-content .exercise-card { margin-top: 10px; }
-
-    .group-chip {
-      display: inline-block;
-      border: 1px solid #383838;
-      border-radius: 999px;
-      padding: 3px 8px;
-      color: var(--muted);
-      font-size: 10px;
-      margin-top: 6px;
-    }
-
-    footer {
-      text-align: center;
-      color: #737373;
-      font-size: 11px;
-      padding: 12px;
-    }
-
-    @media (max-width: 600px) {
-      .app { padding: 16px 11px 32px; }
-      header { align-items: flex-start; }
-      .status { max-width: 90px; }
-      .tabs { gap: 4px; padding: 4px; }
-      .tab { font-size: 11px; padding: 10px 2px; }
-      .panel { padding: 14px; }
-      .stats { gap: 7px; }
-      .stat { padding: 11px; }
-      .stat-label { font-size: 10px; }
-      .grid-2 { grid-template-columns: 1fr; }
-      .set-row { grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr); gap: 6px; }
-      .button-row .btn { flex: 1 1 auto; }
-      .folder-summary { gap: 9px; padding: 12px; }
-      .folder-icon { width: 36px; height: 36px; }
-      .folder-status { font-size: 10px; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101010">
+<meta name="description" content="Bitácora Gym: registra tus entrenamientos, ejercicios y recuperación muscular.">
+<title>Bitácora Gym</title>
+
+<style>
+:root {
+  --bg: #101010;
+  --panel: #191919;
+  --panel2: #222222;
+  --line: #343434;
+  --text: #f5f5f5;
+  --muted: #a1a1a1;
+  --accent: #d7ff64;
+  --danger: #ff7272;
+  --radius: 17px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, Arial, sans-serif;
+  line-height: 1.45;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.app { max-width: 1100px; margin: auto; padding: 20px; }
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; padding: 14px 0 22px;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo {
+  display: grid; place-items: center; width: 48px; height: 48px;
+  border-radius: 14px; background: var(--accent); color: #111;
+  font-size: 25px; font-weight: 900;
+}
+h1 { margin: 0; font-size: 25px; letter-spacing: -.8px; }
+.subtitle { color: var(--muted); font-size: 13px; margin-top: 3px; }
+.top-status { color: var(--muted); font-size: 12px; }
+nav {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px;
+  background: #181818; border: 1px solid var(--line);
+  border-radius: 15px; padding: 6px; margin-bottom: 20px;
+}
+nav button {
+  border: 0; color: var(--muted); background: transparent;
+  padding: 12px 8px; border-radius: 10px; font-weight: 700;
+}
+nav button.active { background: var(--accent); color: #111; }
+.page { display: none; }
+.page.active { display: block; }
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin: 22px 0 13px;
+}
+h2 { font-size: 20px; margin: 0; }
+h3 { font-size: 16px; margin: 0 0 12px; }
+p { margin-top: 0; }
+.muted, .small { color: var(--muted); }
+.small { font-size: 12px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+.card {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 18px; min-width: 0;
+}
+.stat-number { font-size: 27px; font-weight: 800; margin: 5px 0; }
+.stat-label { color: var(--muted); font-size: 12px; }
+label { display: block; font-size: 13px; color: #d4d4d4; margin: 0 0 6px; }
+input, select, textarea {
+  display: block; width: 100%; background: #111; color: var(--text);
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 11px 12px; min-width: 0;
+}
+textarea { min-height: 75px; resize: vertical; }
+.field { margin-bottom: 13px; }
+.row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.row > * { flex: 1; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px; padding: 11px 14px; border: 1px solid var(--line);
+  border-radius: 10px; background: var(--panel2); color: var(--text);
+  font-weight: 700;
+}
+.btn.primary { background: var(--accent); color: #111; border-color: var(--accent); }
+.btn.danger { color: var(--danger); }
+.btn.ghost { background: transparent; }
+.btn.small-btn { padding: 7px 10px; font-size: 12px; }
+.full { width: 100%; }
+.pill {
+  display: inline-flex; border-radius: 100px; padding: 5px 9px;
+  background: #292929; color: #dedede; font-size: 11px; font-weight: 700;
+}
+.pill.good { background: #23321b; color: var(--accent); }
+.pill.wait { background: #3a2c19; color: #ffd18b; }
+.pill.bad { background: #3c2020; color: #ffaaaa; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }
+.empty {
+  padding: 25px 15px; border: 1px dashed var(--line);
+  border-radius: 13px; text-align: center; color: var(--muted);
+}
+.set-row {
+  display: grid; grid-template-columns: 35px 1fr 1fr 38px;
+  align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.set-row input { padding: 9px; }
+.set-number { color: var(--muted); font-size: 12px; text-align: center; }
+.exercise-item, .history-item {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line);
+}
+.exercise-item:last-child, .history-item:last-child { border-bottom: 0; }
+.item-title { font-weight: 750; overflow-wrap: anywhere; }
+.item-meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
+.item-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.folder {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 14px; margin-bottom: 10px; overflow: hidden;
+}
+.folder summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center;
+  gap: 12px; padding: 15px;
+}
+.folder summary::-webkit-details-marker { display: none; }
+.folder-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: grid; place-items: center; background: #2b2b2b; font-size: 19px;
+}
+.folder-info { flex: 1; min-width: 0; }
+.folder-title { font-weight: 800; }
+.folder-meta { color: var(--muted); font-size: 12px; margin-top: 3px; }
+.folder-arrow { color: var(--muted); }
+.folder-content { padding: 0 15px 14px; }
+.recovery-line {
+  display: flex; justify-content: space-between; gap: 10px;
+  align-items: center; font-size: 12px; margin: 12px 0 6px;
+}
+.bar { height: 6px; background: #353535; border-radius: 10px; overflow: hidden; }
+.bar > span { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+.auth-box { max-width: 500px; margin: auto; }
+.notice {
+  border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+  color: var(--muted); font-size: 12px; margin: 12px 0;
+}
+#toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #111; border-radius: 12px;
+  padding: 12px 17px; font-weight: 800; display: none;
+  z-index: 100; max-width: calc(100vw - 30px);
+}
+footer { text-align: center; color: #777; font-size: 11px; padding: 30px 0 10px; }
+@media (max-width: 650px) {
+  .app { padding: 13px; }
+  h1 { font-size: 21px; }
+  nav { grid-template-columns: repeat(2,1fr); }
+  .grid { grid-template-columns: 1fr; }
+  .stats { gap: 7px; }
+  .card { padding: 14px; }
+  .stat-number { font-size: 22px; }
+  .exercise-item, .history-item { align-items: flex-start; }
+  .item-actions { flex-direction: column; }
+}
+</style>
 </head>
 
 <body>
-  <main class="app">
-    <header>
-      <div class="brand">
-        <div class="logo">B</div>
-        <div>
-          <h1>Bitácora Gym</h1>
-          <p class="subtitle">Registra tus series. Controla tu recuperación.</p>
-        </div>
+<div class="app">
+<header>
+  <div class="brand">
+    <div class="logo">B</div>
+    <div>
+      <h1>BITÁCORA GYM</h1>
+      <div class="subtitle">Entrena. Registra. Progresa.</div>
+    </div>
+  </div>
+  <div class="top-status" id="saveStatus">Guardado en este dispositivo</div>
+</header>
+
+<nav>
+  <button class="active" data-tab="train">Entrenar</button>
+  <button data-tab="exercises">Ejercicios</button>
+  <button data-tab="history">Historial</button>
+  <button data-tab="settings">Datos y ajustes</button>
+</nav>
+
+<main>
+<section class="page active" id="page-train">
+  <div class="stats">
+    <div class="card">
+      <div class="stat-label">ENTRENAMIENTOS</div>
+      <div class="stat-number" id="statWorkouts">0</div>
+      <div class="small">Sesiones registradas</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">EJERCICIOS</div>
+      <div class="stat-number" id="statExercises">0</div>
+      <div class="small">En tu biblioteca</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">GRUPOS MUSCULARES</div>
+      <div class="stat-number" id="statGroups">11</div>
+      <div class="small">Carpetas disponibles</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <h2>Registrar entrenamiento</h2>
+    <span class="pill good">Nueva sesión</span>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label for="exerciseGroupSelect">Grupo muscular</label>
+      <select id="exerciseGroupSelect"></select>
+    </div>
+    <div class="field">
+      <label for="exerciseSelect">Ejercicio</label>
+      <select id="exerciseSelect"></select>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="workoutDate">Fecha del entrenamiento</label>
+        <input type="date" id="workoutDate">
       </div>
-      <div class="status" id="connectionStatus">Modo local</div>
-    </header>
-
-    <nav class="tabs" aria-label="Secciones">
-      <button class="tab active" data-view="entrenar">Entrenar</button>
-      <button class="tab" data-view="ejercicios">Ejercicios</button>
-      <button class="tab" data-view="historial">Historial</button>
-      <button class="tab" data-view="ajustes">Datos y ajustes</button>
-    </nav>
-
-    <div id="globalMessage" class="message" role="status"></div>
-
-    <section class="view active" id="view-entrenar">
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-number" id="statWorkouts">0</div>
-          <div class="stat-label">Entrenamientos</div>
-        </div>
-        <div class="stat">
-          <div class="stat-number" id="statExercises">0</div>
-          <div class="stat-label">Ejercicios registrados</div>
-        </div>
-        <div class="stat">
-          <div class="stat-number" id="statReady">0</div>
-          <div class="stat-label">Ejercicios recuperados</div>
-        </div>
+      <div class="field">
+        <label for="workoutRecovery">Recuperación estimada</label>
+        <input id="workoutRecovery" value="48 horas" readonly>
       </div>
+    </div>
 
-      <div class="panel">
-        <h2>Nuevo entrenamiento</h2>
-        <div class="grid-2">
-          <div class="field">
-            <label for="workoutDate">Fecha</label>
-            <input type="date" id="workoutDate">
-          </div>
-          <div class="field">
-            <label for="workoutTime">Hora</label>
-            <input type="time" id="workoutTime">
-          </div>
-        </div>
+    <h3>Series</h3>
+    <div class="small muted" style="margin-bottom:10px">
+      Registra las repeticiones y el peso utilizado en cada serie.
+    </div>
+    <div class="set-row small muted">
+      <span>Serie</span><span>Repeticiones</span><span>Peso (kg)</span><span></span>
+    </div>
+    <div id="setsContainer"></div>
+    <button class="btn full" id="addSetBtn" type="button">＋ Agregar serie</button>
 
-        <div class="divider"></div>
+    <div class="field" style="margin-top:15px">
+      <label for="workoutNotes">Notas (opcional)</label>
+      <textarea id="workoutNotes" placeholder="Sensaciones, técnica, progreso..."></textarea>
+    </div>
+    <button class="btn primary full" id="saveWorkoutBtn" type="button">Guardar entrenamiento</button>
+  </div>
 
+  <div class="section-head">
+    <h2>Recuperación muscular</h2>
+    <span class="small muted">Según tu último entrenamiento</span>
+  </div>
+  <div id="recoveryList"></div>
+</section>
+
+<section class="page" id="page-exercises">
+  <div class="section-head">
+    <h2>Biblioteca de ejercicios</h2>
+    <span class="pill" id="exerciseCountLabel">0 ejercicios</span>
+  </div>
+
+  <div class="card">
+    <h3 id="exerciseFormTitle">Agregar ejercicio</h3>
+    <form id="exerciseForm">
+      <input type="hidden" id="editExerciseId">
+      <div class="field">
+        <label for="newExerciseName">Nombre del ejercicio</label>
+        <input id="newExerciseName" required maxlength="100" placeholder="Ej. Press de banca">
+      </div>
+      <div class="field">
+        <label for="newExerciseGroup">Grupo muscular</label>
+        <select id="newExerciseGroup"></select>
+      </div>
+      <div class="field">
+        <label for="newExerciseRecovery">Recuperación (horas)</label>
+        <input id="newExerciseRecovery" type="number" min="1" max="240" value="48" required>
+      </div>
+      <div class="row">
+        <button class="btn primary" type="submit" id="saveExerciseBtn">Guardar ejercicio</button>
+        <button class="btn" type="button" id="cancelEditBtn" hidden>Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="section-head">
+    <h2>Carpetas musculares</h2>
+  </div>
+  <div class="field">
+    <label for="exerciseSearch">Buscar ejercicio</label>
+    <input id="exerciseSearch" placeholder="Escribe el nombre de un ejercicio...">
+  </div>
+  <div id="exerciseFolders"></div>
+</section>
+
+<section class="page" id="page-history">
+  <div class="section-head">
+    <h2>Historial de entrenamientos</h2>
+    <span class="pill" id="historyCountLabel">0 sesiones</span>
+  </div>
+  <div class="card">
+    <div class="field">
+      <label for="historyFilter">Filtrar por grupo muscular</label>
+      <select id="historyFilter"></select>
+    </div>
+    <div class="field">
+      <label for="historySearch">Buscar ejercicio</label>
+      <input id="historySearch" placeholder="Buscar en el historial...">
+    </div>
+    <div id="historyList"></div>
+  </div>
+</section>
+
+<section class="page" id="page-settings">
+  <div class="section-head"><h2>Datos y ajustes</h2></div>
+  <div class="grid">
+    <div class="card">
+      <h3>Respaldo de datos</h3>
+      <p class="small muted">Guarda una copia de tus ejercicios y entrenamientos o restáurala en este dispositivo.</p>
+      <button class="btn primary full" id="exportJsonBtn" type="button">Exportar copia JSON</button>
+      <div style="height:9px"></div>
+      <button class="btn full" id="importJsonBtn" type="button">Importar copia JSON</button>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+      <div style="height:9px"></div>
+      <button class="btn full" id="exportCsvBtn" type="button">Exportar historial CSV</button>
+    </div>
+
+    <div class="card">
+      <h3>Cuenta y sincronización</h3>
+      <p class="small muted">Puedes iniciar sesión con tu cuenta. El registro de entrenamientos de esta versión permanece guardado localmente en el navegador.</p>
+      <div id="authSignedOut">
         <div class="field">
-          <label for="exerciseGroupSelect">1. Selecciona una carpeta</label>
-          <select id="exerciseGroupSelect"></select>
+          <label for="authEmail">Correo electrónico</label>
+          <input id="authEmail" type="email" autocomplete="email" placeholder="tu@correo.com">
         </div>
-
-        <div class="field" style="margin-top:12px">
-          <label for="exerciseSelect">2. Selecciona un ejercicio</label>
-          <select id="exerciseSelect"></select>
-        </div>
-
-        <div id="exerciseRecoveryInfo" class="muted small" style="margin-top:10px"></div>
-        <div id="setsContainer"></div>
-
-        <div class="button-row">
-          <button class="btn" id="addSetBtn" type="button">+ Agregar serie</button>
-          <button class="btn primary" id="addExerciseBtn" type="button">Agregar al entrenamiento</button>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>Entrenamiento actual</h2>
-        <p class="muted small">Agrega los ejercicios que realizaste y guarda la sesión cuando termines.</p>
-        <div id="currentWorkoutList"></div>
-
-        <div class="field" style="margin-top:14px">
-          <label for="workoutNotes">Notas del entrenamiento (opcional)</label>
-          <textarea id="workoutNotes" placeholder="Energía, molestias, rendimiento, etc."></textarea>
-        </div>
-
-        <div class="button-row">
-          <button class="btn primary" id="saveWorkoutBtn" type="button">Guardar entrenamiento</button>
-          <button class="btn" id="clearCurrentBtn" type="button">Vaciar sesión</button>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>Estado de recuperación</h2>
-        <p class="muted small">Abre cada carpeta para consultar los ejercicios de ese grupo muscular. El estado se calcula según las horas de recuperación configuradas.</p>
-        <div id="recoveryList"></div>
-      </div>
-    </section>
-
-    <section class="view" id="view-ejercicios">
-      <div class="panel">
-        <h2>Agregar ejercicio</h2>
         <div class="field">
-          <label for="newExerciseName">Nombre del ejercicio</label>
-          <input id="newExerciseName" type="text" placeholder="Ej. Press militar">
+          <label for="authPassword">Contraseña</label>
+          <input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Mínimo 6 caracteres">
         </div>
-
-        <div class="field" style="margin-top:12px">
-          <label for="newExerciseGroup">Grupo muscular / carpeta</label>
-          <select id="newExerciseGroup"></select>
-        </div>
-
-        <div class="field" style="margin-top:12px">
-          <label for="newExerciseRecovery">Recuperación estimada (horas)</label>
-          <input id="newExerciseRecovery" type="number" min="1" max="240" value="48">
-        </div>
-
-        <div class="button-row">
-          <button class="btn primary" id="createExerciseBtn" type="button">Crear ejercicio</button>
+        <div class="row">
+          <button class="btn primary" id="signInBtn" type="button">Iniciar sesión</button>
+          <button class="btn" id="signUpBtn" type="button">Crear cuenta</button>
         </div>
       </div>
-
-      <div class="panel">
-        <h2>Mis ejercicios</h2>
-        <p class="muted small">Cambia el nombre, grupo muscular y recuperación. El ejercicio se moverá automáticamente a la carpeta seleccionada.</p>
-        <div id="exerciseManagerList"></div>
+      <div id="authSignedIn" hidden>
+        <p id="authUserLabel" class="small"></p>
+        <button class="btn" id="signOutBtn" type="button">Cerrar sesión</button>
       </div>
-    </section>
-
-    <section class="view" id="view-historial">
-      <div class="panel">
-        <h2>Historial de entrenamientos</h2>
-        <div class="grid-2">
-          <div class="field">
-            <label for="historyFrom">Desde</label>
-            <input type="date" id="historyFrom">
-          </div>
-          <div class="field">
-            <label for="historyTo">Hasta</label>
-            <input type="date" id="historyTo">
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button class="btn" id="filterHistoryBtn" type="button">Filtrar</button>
-          <button class="btn" id="clearFilterBtn" type="button">Quitar filtros</button>
-        </div>
-
-        <div class="divider"></div>
-        <div id="historyList"></div>
+      <div id="authMessage" class="small muted" style="margin-top:10px"></div>
+      <div class="notice">
+        Iniciar sesión no sincroniza automáticamente los entrenamientos entre dispositivos. Para transferirlos, usa Exportar copia JSON e Importar copia JSON.
       </div>
-    </section>
+    </div>
+  </div>
 
-    <section class="view" id="view-ajustes">
-      <div class="panel">
-        <h2>Cuenta</h2>
-        <p class="muted small">La autenticación utiliza Supabase. Los entrenamientos se guardan en este navegador y todavía no se sincronizan automáticamente entre dispositivos.</p>
+  <div class="card" style="margin-top:14px">
+    <h3>Información de almacenamiento</h3>
+    <p class="small muted">Tus datos se guardan en el almacenamiento local del navegador de este dispositivo. Si borras los datos del navegador, puedes perderlos. Exporta una copia periódicamente.</p>
+    <div class="row">
+      <button class="btn danger" id="clearWorkoutsBtn" type="button">Borrar historial</button>
+      <button class="btn danger" id="resetAllBtn" type="button">Restablecer aplicación</button>
+    </div>
+  </div>
+</section>
+</main>
 
-        <div class="auth-box">
-          <div class="field">
-            <label for="authEmail">Correo electrónico</label>
-            <input id="authEmail" type="email" autocomplete="email" placeholder="tu@correo.com">
-          </div>
+<footer>BITÁCORA GYM · Tu progreso, registrado.</footer>
+</div>
 
-          <div class="field" style="margin-top:10px">
-            <label for="authPassword">Contraseña (mínimo 6 caracteres)</label>
-            <input id="authPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña">
-          </div>
+<div id="toast" role="status" aria-live="polite"></div>
 
-          <div class="button-row">
-            <button class="btn primary" id="loginBtn" type="button">Iniciar sesión</button>
-            <button class="btn" id="registerBtn" type="button">Crear cuenta</button>
-            <button class="btn" id="logoutBtn" type="button">Cerrar sesión</button>
-          </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
 
-          <p class="muted small" id="authMessage" aria-live="polite"></p>
-        </div>
+/*
+ * BITÁCORA GYM
+ * Conserva la clave anterior para intentar mantener los datos guardados.
+ */
+const KEY = "bitacoraGym.v1";
 
-        <div class="divider"></div>
+const MUSCLE_GROUPS = [
+  "Elongación",
+  "Pectoral",
+  "Espalda",
+  "Bíceps",
+  "Tríceps",
+  "Antebrazos",
+  "Hombros",
+  "Piernas",
+  "Abdominales y zona lumbar",
+  "Cuello y cara",
+  "Otros"
+];
 
-        <h2>Exportar y respaldar datos</h2>
-        <p class="muted small">Descarga una copia de tus registros para conservarlos.</p>
+const GROUP_RECOVERY = {
+  "Elongación": 6,
+  "Pectoral": 48,
+  "Espalda": 48,
+  "Bíceps": 48,
+  "Tríceps": 48,
+  "Antebrazos": 48,
+  "Hombros": 48,
+  "Piernas": 48,
+  "Abdominales y zona lumbar": 48,
+  "Cuello y cara": 10,
+  "Otros": 48
+};
 
-        <div class="button-row">
-          <button class="btn primary" id="exportCsvBtn" type="button">Exportar CSV</button>
-          <button class="btn" id="backupBtn" type="button">Descargar respaldo JSON</button>
-        </div>
+const GROUP_ICONS = {
+  "Elongación": "↗",
+  "Pectoral": "▰",
+  "Espalda": "▤",
+  "Bíceps": "💪",
+  "Tríceps": "◆",
+  "Antebrazos": "◉",
+  "Hombros": "◇",
+  "Piernas": "▥",
+  "Abdominales y zona lumbar": "◎",
+  "Cuello y cara": "◉",
+  "Otros": "＋"
+};
 
-        <div class="field" style="margin-top:15px">
-          <label for="restoreFile">Restaurar respaldo JSON</label>
-          <input type="file" id="restoreFile" accept=".json,application/json">
-        </div>
+const DEFAULT_EXERCISES = [
+  ["elongacion-principal", "Elongación principal", "Elongación", 6],
+  ["elongacion-final", "Elongación final", "Elongación", 6],
 
-        <div class="button-row">
-          <button class="btn" id="restoreBtn" type="button">Restaurar datos</button>
-        </div>
+  ["press-inclinado", "Press inclinado", "Pectoral", 48],
+  ["press-plano", "Press plano", "Pectoral", 48],
+  ["pec-deck-aperturas", "Pec deck o aperturas", "Pectoral", 48],
 
-        <div class="divider"></div>
+  ["jalon-al-pecho", "Jalón al pecho", "Espalda", 48],
+  ["remo", "Remo", "Espalda", 48],
+  ["remo-con-barra", "Remo con barra", "Espalda", 48],
+  ["peso-muerto", "Peso muerto", "Espalda", 48],
+  ["remo-con-mancuerna", "Remo con mancuerna", "Espalda", 48],
+  ["trapecio", "Trapecio", "Espalda", 48],
+  ["encogimiento", "Encogimiento", "Espalda", 48],
 
-        <h2>Almacenamiento</h2>
-        <p class="muted small" id="storageInfo"></p>
-        <button class="btn danger" id="clearAllBtn" type="button">Eliminar todos mis datos</button>
-      </div>
-    </section>
+  ["curl-normal", "Curl normal", "Bíceps", 48],
+  ["curl-braquial", "Curl braquial", "Bíceps", 48],
+  ["curl-martillo", "Curl martillo", "Bíceps", 48],
+  ["isometria-biceps", "Isometría", "Bíceps", 48],
 
-    <footer>Bitácora Gym · Tus entrenamientos, a tu ritmo.</footer>
-  </main>
+  ["fondos-triceps", "Fondos", "Tríceps", 48],
+  ["extension-barra-z", "Extensión con barra Z", "Tríceps", 48],
+  ["extension-sobre-cabeza", "Extensión sobre cabeza con mancuerna", "Tríceps", 48],
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  ["mancuernas-antebrazo", "Mancuernas", "Antebrazos", 48],
 
-  <script>
-    "use strict";
+  ["elevaciones-laterales", "Elevaciones laterales", "Hombros", 48],
+  ["press-frontal", "Press frontal", "Hombros", 48],
+  ["elevaciones-frontales", "Elevaciones frontales", "Hombros", 48],
+  ["polea-hombros", "Polea", "Hombros", 48],
 
-    const SUPABASE_URL = "https://qfndlwotpmbgjtgfdbfk.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_FiZZJrXX6Pna1RTiny9y1g_IDsMJHY-";
-    const STORAGE_KEY = "bitacoraGym.v1";
+  ["prensa", "Prensa", "Piernas", 48],
+  ["extension-cuadriceps", "Extensiones de cuádriceps", "Piernas", 48],
+  ["abductores", "Abductores", "Piernas", 48],
+  ["aductores", "Aductores", "Piernas", 48],
+  ["peso-muerto-rumano", "Peso muerto rumano", "Piernas", 48],
+  ["gemelos", "Gemelos", "Piernas", 48],
+  ["curl-sentado", "Curl sentado", "Piernas", 48],
 
-    const MUSCLE_GROUPS = [
-      "Pecho",
-      "Espalda",
-      "Piernas",
-      "Brazos",
-      "Hombros",
-      "Abdominales y zona lumbar",
-      "Otros"
-    ];
+  ["abdominales-maquina", "Abdominales máquina", "Abdominales y zona lumbar", 48],
+  ["plancha", "Plancha", "Abdominales y zona lumbar", 48],
+  ["lumbar-maquina", "Lumbar máquina", "Abdominales y zona lumbar", 48],
 
-    const GROUP_ICONS = {
-      "Pecho": "▰",
-      "Espalda": "▤",
-      "Piernas": "▥",
-      "Brazos": "◉",
-      "Hombros": "◆",
-      "Abdominales y zona lumbar": "◎",
-      "Otros": "＋"
+  ["cuello-con-peso", "Cuello con peso", "Cuello y cara", 10],
+  ["cuello-sin-peso", "Cuello sin peso", "Cuello y cara", 10],
+  ["cara", "Cara", "Cuello y cara", 10]
+].map(([id, name, group, recoveryHours]) => ({
+  id, name, group, recoveryHours
+}));
+
+const $ = id => document.getElementById(id);
+
+function makeId() {
+  return "id-" + Date.now().toString(36) + "-" +
+    Math.random().toString(36).slice(2, 9);
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[ch]);
+}
+
+function normaliseGroup(group, exerciseName = "") {
+  const lower = String(group || "").trim().toLocaleLowerCase("es");
+  const name = String(exerciseName || "").toLocaleLowerCase("es");
+
+  if (["pecho", "pectoral", "pectorales"].includes(lower)) return "Pectoral";
+  if (["espalda"].includes(lower)) return "Espalda";
+  if (["elongacion", "elongación"].includes(lower)) return "Elongación";
+  if (["antebrazo", "antebrazos"].includes(lower)) return "Antebrazos";
+  if (["bíceps", "biceps"].includes(lower)) return "Bíceps";
+  if (["tríceps", "triceps"].includes(lower)) return "Tríceps";
+  if (["hombro", "hombros"].includes(lower)) return "Hombros";
+  if (["pierna", "piernas"].includes(lower)) return "Piernas";
+  if (["cuello y cara", "cuello", "cara"].includes(lower)) return "Cuello y cara";
+  if (["abdominales", "zona lumbar", "abdominales y zona lumbar"].includes(lower)) {
+    return "Abdominales y zona lumbar";
+  }
+
+  if (lower === "brazos") {
+    if (
+      name.includes("tríceps") || name.includes("triceps") ||
+      name.includes("fondos") || name.includes("extensión") ||
+      name.includes("extension")
+    ) return "Tríceps";
+    return "Bíceps";
+  }
+
+  return MUSCLE_GROUPS.includes(String(group || "").trim())
+    ? String(group).trim()
+    : "Otros";
+}
+
+function defaultData() {
+  return {
+    exercises: DEFAULT_EXERCISES.map(ex => ({ ...ex })),
+    workouts: []
+  };
+}
+
+function normaliseData(raw) {
+  const base = raw && typeof raw === "object" ? raw : {};
+  const exercises = Array.isArray(base.exercises) ? base.exercises : [];
+  const workouts = Array.isArray(base.workouts) ? base.workouts : [];
+
+  const normalExercises = exercises.map(ex => ({
+    id: String(ex.id || makeId()),
+    name: String(ex.name || ex.exerciseName || "Ejercicio"),
+    group: normaliseGroup(ex.group || ex.muscleGroup, ex.name || ex.exerciseName),
+    recoveryHours: Number(ex.recoveryHours) > 0
+      ? Number(ex.recoveryHours)
+      : GROUP_RECOVERY[normaliseGroup(ex.group, ex.name)] || 48
+  }));
+
+  /*
+   * Agrega ejercicios nuevos sin duplicar los que ya existían.
+   * Los ejercicios y entrenamientos anteriores se conservan.
+   */
+  for (const ex of DEFAULT_EXERCISES) {
+    const exists = normalExercises.some(item =>
+      item.id === ex.id ||
+      item.name.toLocaleLowerCase("es") === ex.name.toLocaleLowerCase("es")
+    );
+    if (!exists) normalExercises.push({ ...ex });
+  }
+
+  const normalWorkouts = workouts.map(w => {
+    const oldSets = Array.isArray(w.sets) ? w.sets : [];
+    const found = normalExercises.find(ex =>
+      ex.id === w.exerciseId ||
+      ex.name.toLocaleLowerCase("es") ===
+        String(w.exerciseName || "").toLocaleLowerCase("es")
+    );
+
+    const exerciseName = String(
+      w.exerciseName || (found && found.name) || "Ejercicio"
+    );
+
+    const group = normaliseGroup(
+      w.group || w.muscleGroup || (found && found.group),
+      exerciseName
+    );
+
+    return {
+      id: String(w.id || makeId()),
+      exerciseId: String(w.exerciseId || (found && found.id) || ""),
+      exerciseName,
+      group,
+      recoveryHours: Number(w.recoveryHours) > 0
+        ? Number(w.recoveryHours)
+        : (found && found.recoveryHours) || GROUP_RECOVERY[group] || 48,
+      date: String(w.date || new Date().toISOString().slice(0, 10)),
+      sets: oldSets.map(s => ({
+        reps: Math.max(0, Number(s.reps) || 0),
+        weight: Math.max(0, Number(s.weight) || 0)
+      })),
+      notes: String(w.notes || "")
     };
+  });
 
-    const DEFAULT_EXERCISES = [
-      { id: "press-banca", name: "Press de banca", group: "Pecho", recoveryHours: 48 },
-      { id: "press-inclinado", name: "Press inclinado con mancuernas", group: "Pecho", recoveryHours: 48 },
-      { id: "pec-deck", name: "Pec deck", group: "Pecho", recoveryHours: 48 },
-      { id: "curl-biceps", name: "Curl de bíceps con mancuernas", group: "Brazos", recoveryHours: 48 },
-      { id: "extension-triceps", name: "Extensión de tríceps sobre cabeza", group: "Brazos", recoveryHours: 48 },
-      { id: "remo-sentado", name: "Remo sentado", group: "Espalda", recoveryHours: 48 },
-      { id: "jalon-pecho", name: "Jalón al pecho", group: "Espalda", recoveryHours: 48 },
-      { id: "sentadilla", name: "Sentadilla", group: "Piernas", recoveryHours: 72 },
-      { id: "peso-muerto-rumano", name: "Peso muerto rumano", group: "Piernas", recoveryHours: 72 },
-      { id: "elevaciones-laterales", name: "Elevaciones laterales", group: "Hombros", recoveryHours: 48 },
-      { id: "abdominales", name: "Abdominales", group: "Abdominales y zona lumbar", recoveryHours: 24 },
-      { id: "espalda-baja", name: "Extensiones de espalda baja", group: "Abdominales y zona lumbar", recoveryHours: 48 },
-      { id: "giro-disco", name: "Giro con disco sobre la cabeza", group: "Abdominales y zona lumbar", recoveryHours: 48 }
-    ];
+  return { exercises: normalExercises, workouts: normalWorkouts };
+}
 
-    const $ = id => document.getElementById(id);
+function loadData() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) return normaliseData(JSON.parse(raw));
+  } catch (err) {
+    console.error("No se pudieron leer los datos guardados", err);
+  }
+  return defaultData();
+}
 
-    function uid() {
-      return window.crypto && crypto.randomUUID
-        ? crypto.randomUUID()
-        : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2);
-    }
+let data = loadData();
 
-    function localDateString(date = new Date()) {
-      return date.getFullYear() + "-" +
-        String(date.getMonth() + 1).padStart(2, "0") + "-" +
-        String(date.getDate()).padStart(2, "0");
-    }
+function saveData() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(data));
+    $("saveStatus").textContent = "Guardado en este dispositivo";
+  } catch (err) {
+    $("saveStatus").textContent = "Error al guardar";
+    toast("No se pudieron guardar los datos. Exporta una copia.");
+    console.error(err);
+  }
+}
 
-    function escapeHtml(value) {
-      return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[char]);
-    }
+let setCounter = 0;
+let toastTimeout;
 
-    function normaliseGroup(group) {
-      return MUSCLE_GROUPS.includes(group) ? group : "Otros";
-    }
+function toast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.style.display = "block";
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => el.style.display = "none", 2800);
+}
 
-    function inferDefaultExercise(id, name) {
-      return DEFAULT_EXERCISES.find(ex =>
-        ex.id === id ||
-        ex.name.toLocaleLowerCase("es") === String(name || "").toLocaleLowerCase("es")
-      );
-    }
+function formatHours(hours) {
+  const n = Number(hours) || 0;
+  return n === 1 ? "1 hora" : `${n} horas`;
+}
 
-    function defaultData() {
-      return {
-        version: 2,
-        exercises: DEFAULT_EXERCISES.map(ex => ({ ...ex })),
-        workouts: []
-      };
-    }
+function formatDate(date) {
+  if (!date) return "Sin fecha";
+  const parts = date.split("-");
+  if (parts.length !== 3) return date;
+  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
 
-    function normaliseData(raw) {
-      if (!raw || !Array.isArray(raw.exercises) || !Array.isArray(raw.workouts)) {
-        return defaultData();
-      }
+function today() {
+  const d = new Date();
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+}
 
-      const exercises = raw.exercises.map(ex => {
-        const inferred = inferDefaultExercise(ex.id, ex.name);
-        return {
-          id: String(ex.id || uid()),
-          name: String(ex.name || "Ejercicio"),
-          group: normaliseGroup(ex.group || (inferred && inferred.group)),
-          recoveryHours: Math.min(240, Math.max(1, Number(ex.recoveryHours) || 48))
-        };
-      });
+function fillGroupSelect(select, includeAll = false) {
+  select.innerHTML = "";
+  if (includeAll) {
+    const all = document.createElement("option");
+    all.value = "Todos";
+    all.textContent = "Todos los grupos";
+    select.appendChild(all);
+  }
+  for (const group of MUSCLE_GROUPS) {
+    const option = document.createElement("option");
+    option.value = group;
+    option.textContent = group;
+    select.appendChild(option);
+  }
+}
 
-      const workouts = raw.workouts.map(w => ({
-        id: String(w.id || uid()),
-        date: String(w.date || localDateString()),
-        time: String(w.time || "00:00"),
-        notes: String(w.notes || ""),
-        exercises: Array.isArray(w.exercises) ? w.exercises.map(ex => {
-          const current = exercises.find(item => item.id === ex.exerciseId);
-          const inferred = inferDefaultExercise(ex.exerciseId, ex.name);
+function renderExerciseSelect(forceGroup = false) {
+  const groupSelect = $("exerciseGroupSelect");
+  const exerciseSelect = $("exerciseSelect");
+  const selectedGroup = forceGroup ? groupSelect.value : groupSelect.value;
 
-          return {
-            exerciseId: String(ex.exerciseId || ""),
-            name: String(ex.name || "Ejercicio"),
-            group: normaliseGroup(ex.group || (current && current.group) || (inferred && inferred.group)),
-            recoveryHours: Math.min(240, Math.max(1, Number(ex.recoveryHours) || 48)),
-            sets: Array.isArray(ex.sets) ? ex.sets.map(set => ({
-              reps: Math.max(0, Number(set.reps) || 0),
-              weight: Math.max(0, Number(set.weight) || 0)
-            })) : []
-          };
-        }) : []
-      }));
+  exerciseSelect.innerHTML = "";
+  const list = data.exercises.filter(ex => ex.group === selectedGroup);
 
-      return { version: 2, exercises, workouts };
-    }
+  if (!list.length) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "No hay ejercicios en esta carpeta";
+    exerciseSelect.appendChild(opt);
+    $("workoutRecovery").value =
+      formatHours(GROUP_RECOVERY[selectedGroup] || 48);
+    return;
+  }
 
-    function loadData() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? normaliseData(JSON.parse(raw)) : defaultData();
-      } catch (error) {
-        console.error("Error leyendo datos guardados:", error);
-        return defaultData();
-      }
-    }
+  for (const ex of list) {
+    const opt = document.createElement("option");
+    opt.value = ex.id;
+    opt.textContent = ex.name;
+    exerciseSelect.appendChild(opt);
+  }
 
-    let data = loadData();
-    let currentExercises = [];
-    let currentSets = [{ reps: 10, weight: 0 }];
-    let historyFilter = { from: "", to: "" };
-    let supabaseClient = null;
+  updateWorkoutRecovery();
+}
 
-    function showMessage(message, isError = false) {
-      const el = $("globalMessage");
-      el.textContent = message;
-      el.className = "message show" + (isError ? " error" : "");
-      clearTimeout(showMessage.timer);
-      showMessage.timer = setTimeout(() => {
-        el.className = "message";
-      }, 4500);
-    }
+function updateWorkoutRecovery() {
+  const ex = data.exercises.find(item => item.id === $("exerciseSelect").value);
+  const group = $("exerciseGroupSelect").value;
+  $("workoutRecovery").value = formatHours(
+    ex ? ex.recoveryHours : (GROUP_RECOVERY[group] || 48)
+  );
+}
 
-    function saveData() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        renderAll();
-        return true;
-      } catch (error) {
-        console.error(error);
-        showMessage("No se pudieron guardar los datos. Comprueba el espacio disponible en el navegador.", true);
-        return false;
-      }
-    }
+function addSetRow(reps = "", weight = "") {
+  setCounter++;
+  const container = $("setsContainer");
+  const row = document.createElement("div");
+  row.className = "set-row";
+  row.innerHTML = `
+    <span class="set-number">${container.children.length + 1}</span>
+    <input type="number" min="0" max="1000" step="1"
+      class="set-reps" placeholder="Reps" aria-label="Repeticiones de la serie"
+      value="${escapeHtml(reps)}">
+    <input type="number" min="0" max="1000" step="0.5"
+      class="set-weight" placeholder="Kg" aria-label="Peso de la serie"
+      value="${escapeHtml(weight)}">
+    <button class="btn small-btn remove-set" type="button" aria-label="Eliminar serie">×</button>
+  `;
+  row.querySelector(".remove-set").addEventListener("click", () => {
+    row.remove();
+    renumberSets();
+    if (!$("setsContainer").children.length) addSetRow();
+  });
+  container.appendChild(row);
+}
 
-    function showView(name) {
-      document.querySelectorAll(".tab").forEach(button => {
-        button.classList.toggle("active", button.dataset.view === name);
-      });
+function renumberSets() {
+  [...$("setsContainer").children].forEach((row, i) => {
+    row.querySelector(".set-number").textContent = i + 1;
+  });
+}
 
-      document.querySelectorAll(".view").forEach(view => {
-        view.classList.toggle("active", view.id === "view-" + name);
-      });
+function readSets() {
+  return [...$("setsContainer").querySelectorAll(".set-row")].map(row => ({
+    reps: Math.max(0, Number(row.querySelector(".set-reps").value) || 0),
+    weight: Math.max(0, Number(row.querySelector(".set-weight").value) || 0)
+  })).filter(set => set.reps > 0 || set.weight > 0);
+}
 
-      if (name === "historial") renderHistory();
-      if (name === "ejercicios") renderExerciseManager();
-      if (name === "ajustes") renderStorageInfo();
-    }
+function saveWorkout() {
+  const exercise = data.exercises.find(ex => ex.id === $("exerciseSelect").value);
+  if (!exercise) {
+    toast("Selecciona un ejercicio válido.");
+    return;
+  }
 
-    function initTabs() {
-      document.querySelectorAll(".tab").forEach(button => {
-        button.addEventListener("click", () => showView(button.dataset.view));
-      });
-    }
+  const sets = readSets();
+  if (!sets.length) {
+    toast("Ingresa las repeticiones o el peso de al menos una serie.");
+    return;
+  }
 
-    function initDateTime() {
-      $("workoutDate").value = localDateString();
+  data.workouts.push({
+    id: makeId(),
+    exerciseId: exercise.id,
+    exerciseName: exercise.name,
+    group: exercise.group,
+    recoveryHours: Number(exercise.recoveryHours) || GROUP_RECOVERY[exercise.group] || 48,
+    date: $("workoutDate").value || today(),
+    sets,
+    notes: $("workoutNotes").value.trim()
+  });
 
-      const now = new Date();
-      $("workoutTime").value =
-        String(now.getHours()).padStart(2, "0") + ":" +
-        String(now.getMinutes()).padStart(2, "0");
-    }
+  saveData();
+  $("workoutNotes").value = "";
+  $("setsContainer").innerHTML = "";
+  addSetRow();
+  renderAll();
+  toast("Entrenamiento guardado correctamente.");
+}
 
-    function getExercise(id) {
-      return data.exercises.find(ex => ex.id === id);
-    }
+function lastWorkoutForGroup(group) {
+  return data.workouts
+    .filter(w => normaliseGroup(w.group, w.exerciseName) === group)
+    .sort((a, b) => {
+      const da = new Date(a.date + "T12:00:00").getTime();
+      const db = new Date(b.date + "T12:00:00").getTime();
+      return db - da;
+    })[0] || null;
+}
 
-    function getLatestWorkoutForExercise(exerciseId) {
-      let latest = null;
+function getRecoveryStatus(workout) {
+  if (!workout) return { label: "Sin entrenamientos", className: "", percent: 0 };
+  const start = new Date(workout.date + "T12:00:00").getTime();
+  const hoursPassed = Math.max(0, (Date.now() - start) / 3600000);
+  const required = Math.max(1, Number(workout.recoveryHours) || 48);
+  const percent = Math.min(100, (hoursPassed / required) * 100);
+  if (hoursPassed >= required) {
+    return { label: "Recuperación estimada completada", className: "good", percent: 100 };
+  }
+  const left = Math.ceil(required - hoursPassed);
+  return { label: `Faltan aprox. ${formatHours(left)}`, className: "wait", percent };
+}
 
-      for (const workout of data.workouts) {
-        for (const ex of workout.exercises) {
-          if (ex.exerciseId !== exerciseId) continue;
+function renderRecoveryList() {
+  $("recoveryList").innerHTML = MUSCLE_GROUPS.map(group => {
+    const exercises = data.exercises.filter(ex => ex.group === group);
+    const last = lastWorkoutForGroup(group);
+    const status = getRecoveryStatus(last);
+    const recovery = last
+      ? Number(last.recoveryHours) || GROUP_RECOVERY[group] || 48
+      : GROUP_RECOVERY[group] || 48;
 
-          const timestamp = new Date(
-            `${workout.date}T${workout.time || "00:00"}`
-          ).getTime();
-
-          if (!Number.isFinite(timestamp)) continue;
-
-          if (!latest || timestamp > latest.timestamp) {
-            latest = { timestamp, workout, exercise: ex };
+    return `
+      <details class="folder">
+        <summary>
+          <span class="folder-icon">${GROUP_ICONS[group] || "▰"}</span>
+          <span class="folder-info">
+            <span class="folder-title">${escapeHtml(group)}</span>
+            <span class="folder-meta">${exercises.length} ejercicios · Recuperación ${formatHours(recovery)}</span>
+          </span>
+          <span class="pill ${status.className}">${last ? (status.percent >= 100 ? "Recuperado" : "En recuperación") : "Sin datos"}</span>
+          <span class="folder-arrow">⌄</span>
+        </summary>
+        <div class="folder-content">
+          ${
+            last
+              ? `<div class="recovery-line"><span>Último entrenamiento: ${escapeHtml(formatDate(last.date))}</span><span>${escapeHtml(status.label)}</span></div>
+                 <div class="bar"><span style="width:${status.percent}%"></span></div>
+                 <p class="small muted" style="margin-top:10px">Último ejercicio: ${escapeHtml(last.exerciseName)}.</p>`
+              : `<p class="small muted">Todavía no hay entrenamientos registrados para este grupo.</p>`
           }
-        }
-      }
-
-      return latest;
-    }
-
-    function getRecoveryStatus(exercise) {
-      const latest = getLatestWorkoutForExercise(exercise.id);
-
-      if (!latest) {
-        return { ready: true, remainingMs: 0, latest: null };
-      }
-
-      const requiredMs = (Number(exercise.recoveryHours) || 48) * 3600000;
-      const remainingMs = requiredMs - (Date.now() - latest.timestamp);
-
-      return {
-        ready: remainingMs <= 0,
-        remainingMs: Math.max(0, remainingMs),
-        latest
-      };
-    }
-
-    function formatDuration(ms) {
-      const totalMinutes = Math.ceil(Math.max(0, ms) / 60000);
-      const days = Math.floor(totalMinutes / 1440);
-      const hours = Math.floor((totalMinutes % 1440) / 60);
-      const minutes = totalMinutes % 60;
-
-      if (days > 0) return `${days} d ${hours} h`;
-      if (hours > 0) return `${hours} h ${minutes} min`;
-      return `${minutes} min`;
-    }
-
-    function formatDate(dateString) {
-      if (!dateString) return "Sin fecha";
-      const parts = dateString.split("-");
-      return parts.length === 3
-        ? `${parts[2]}/${parts[1]}/${parts[0]}`
-        : dateString;
-    }
-
-    function fillGroupSelect(select, selected = "Otros") {
-      select.innerHTML = MUSCLE_GROUPS.map(group =>
-        `<option value="${escapeHtml(group)}"${group === selected ? " selected" : ""}>${escapeHtml(group)}</option>`
-      ).join("");
-    }
-
-    /*
-     * CORRECCIÓN:
-     * forceSelectedGroup = true significa que el usuario cambió manualmente
-     * la carpeta. En ese caso NO se selecciona otra vez el grupo del ejercicio
-     * que estaba elegido anteriormente.
-     */
-    function renderExerciseSelect(forceSelectedGroup = false) {
-      const groupSelect = $("exerciseGroupSelect");
-      const exerciseSelect = $("exerciseSelect");
-
-      if (!groupSelect || !exerciseSelect) return;
-
-      const previousExercise = exerciseSelect.value;
-      const previousGroup = groupSelect.value;
-
-      const groupsWithExercises = MUSCLE_GROUPS.filter(group =>
-        data.exercises.some(ex => normaliseGroup(ex.group) === group)
-      );
-
-      groupSelect.innerHTML = groupsWithExercises.map(group => {
-        const count = data.exercises.filter(
-          ex => normaliseGroup(ex.group) === group
-        ).length;
-
-        return `<option value="${escapeHtml(group)}">${escapeHtml(group)} (${count})</option>`;
-      }).join("");
-
-      const previousExerciseData = data.exercises.find(
-        ex => ex.id === previousExercise
-      );
-
-      let selectedGroup = groupsWithExercises.includes(previousGroup)
-        ? previousGroup
-        : groupsWithExercises[0];
-
-      // Solo sigue al grupo del ejercicio anterior durante actualizaciones
-      // normales, nunca cuando el usuario cambia la carpeta manualmente.
-      if (!forceSelectedGroup && previousExerciseData) {
-        selectedGroup = normaliseGroup(previousExerciseData.group);
-      }
-
-      if (selectedGroup) {
-        groupSelect.value = selectedGroup;
-      }
-
-      const exercisesInGroup = data.exercises
-        .filter(ex => normaliseGroup(ex.group) === groupSelect.value)
-        .sort((a, b) => a.name.localeCompare(b.name, "es"));
-
-      if (exercisesInGroup.length > 0) {
-        exerciseSelect.innerHTML = exercisesInGroup.map(ex =>
-          `<option value="${escapeHtml(ex.id)}">${escapeHtml(ex.name)}</option>`
-        ).join("");
-
-        if (exercisesInGroup.some(ex => ex.id === previousExercise)) {
-          exerciseSelect.value = previousExercise;
-        } else {
-          exerciseSelect.selectedIndex = 0;
-        }
-      } else {
-        exerciseSelect.innerHTML =
-          '<option value="">No hay ejercicios en esta carpeta</option>';
-      }
-
-      renderRecoveryInfo();
-    }
-
-    function renderRecoveryInfo() {
-      const exercise = getExercise($("exerciseSelect").value);
-
-      if (!exercise) {
-        $("exerciseRecoveryInfo").textContent =
-          "No hay ejercicios en esta carpeta. Puedes crear uno en la sección Ejercicios.";
-        return;
-      }
-
-      const status = getRecoveryStatus(exercise);
-
-      $("exerciseRecoveryInfo").textContent = status.ready
-        ? `${exercise.group} · Recuperación estimada: ${exercise.recoveryHours} h. Estado: recuperado según el tiempo configurado.`
-        : `${exercise.group} · Recuperación estimada: ${exercise.recoveryHours} h. Tiempo restante: ${formatDuration(status.remainingMs)}.`;
-    }
-
-    function renderSets() {
-      $("setsContainer").innerHTML = currentSets.map((set, index) => `
-        <div class="set-row">
-          <div class="set-number">Serie ${index + 1}</div>
-          <div class="field">
-            <label for="reps-${index}">Repeticiones</label>
-            <input id="reps-${index}" type="number" min="0" max="1000" step="1"
-              value="${escapeHtml(set.reps)}" data-set-reps="${index}">
-          </div>
-          <div class="field">
-            <label for="weight-${index}">Peso (kg)</label>
-            <input id="weight-${index}" type="number" min="0" max="2000" step="0.5"
-              value="${escapeHtml(set.weight)}" data-set-weight="${index}">
-          </div>
+          ${
+            exercises.length
+              ? `<div class="small muted" style="margin-top:10px">Ejercicios: ${exercises.map(ex => escapeHtml(ex.name)).join(" · ")}</div>`
+              : `<p class="small muted">Carpeta vacía. Puedes agregar ejercicios en la pestaña Ejercicios.</p>`
+          }
         </div>
-      `).join("");
+      </details>
+    `;
+  }).join("");
+}
 
-      $("setsContainer").querySelectorAll("[data-set-reps]").forEach(input => {
-        input.addEventListener("input", () => {
-          currentSets[Number(input.dataset.setReps)].reps =
-            Math.max(0, Number(input.value) || 0);
-        });
-      });
+function renderExerciseFolders() {
+  const search = $("exerciseSearch").value.trim().toLocaleLowerCase("es");
+  $("exerciseFolders").innerHTML = MUSCLE_GROUPS.map(group => {
+    const exercises = data.exercises.filter(ex =>
+      ex.group === group && ex.name.toLocaleLowerCase("es").includes(search)
+    );
+    if (search && !exercises.length) return "";
 
-      $("setsContainer").querySelectorAll("[data-set-weight]").forEach(input => {
-        input.addEventListener("input", () => {
-          currentSets[Number(input.dataset.setWeight)].weight =
-            Math.max(0, Number(input.value) || 0);
-        });
-      });
-    }
-
-    function renderCurrentWorkout() {
-      const container = $("currentWorkoutList");
-
-      if (!currentExercises.length) {
-        container.innerHTML =
-          '<div class="empty">Todavía no agregas ejercicios a esta sesión.</div>';
-        return;
-      }
-
-      container.innerHTML = currentExercises.map((ex, index) => `
-        <div class="exercise-card">
-          <div class="exercise-top">
-            <div>
-              <div class="exercise-name">${escapeHtml(ex.name)}</div>
-              <span class="group-chip">${escapeHtml(ex.group)}</span>
-              <div class="exercise-meta">${ex.sets.length} series · ${ex.sets.reduce((sum, s) => sum + s.reps, 0)} repeticiones totales</div>
-            </div>
-            <button class="remove-set" type="button" data-remove-current="${index}">Quitar</button>
-          </div>
-          <div class="history-details">
-            ${ex.sets.map((set, i) => `Serie ${i + 1}: ${set.reps} rep. × ${set.weight} kg`).join(" · ")}
-          </div>
-        </div>
-      `).join("");
-
-      container.querySelectorAll("[data-remove-current]").forEach(button => {
-        button.addEventListener("click", () => {
-          currentExercises.splice(Number(button.dataset.removeCurrent), 1);
-          renderCurrentWorkout();
-        });
-      });
-    }
-
-    function addSet() {
-      currentSets.push({ reps: 10, weight: 0 });
-      renderSets();
-    }
-
-    function addExerciseToCurrent() {
-      const exercise = getExercise($("exerciseSelect").value);
-
-      if (!exercise) {
-        showMessage("Selecciona un ejercicio válido.", true);
-        return;
-      }
-
-      const sets = currentSets.map(set => ({
-        reps: Math.max(0, Number(set.reps) || 0),
-        weight: Math.max(0, Number(set.weight) || 0)
-      }));
-
-      if (!sets.length || sets.every(set => set.reps === 0 && set.weight === 0)) {
-        showMessage("Ingresa las repeticiones o el peso antes de agregar el ejercicio.", true);
-        return;
-      }
-
-      currentExercises.push({
-        exerciseId: exercise.id,
-        name: exercise.name,
-        group: exercise.group,
-        recoveryHours: exercise.recoveryHours,
-        sets
-      });
-
-      currentSets = [{ reps: 10, weight: 0 }];
-      renderSets();
-      renderCurrentWorkout();
-      showMessage("Ejercicio agregado a la sesión.");
-    }
-
-    function saveWorkout() {
-      if (!currentExercises.length) {
-        showMessage("Agrega al menos un ejercicio antes de guardar.", true);
-        return;
-      }
-
-      const date = $("workoutDate").value;
-      const time = $("workoutTime").value || "00:00";
-
-      if (!date) {
-        showMessage("Selecciona la fecha del entrenamiento.", true);
-        return;
-      }
-
-      const workout = {
-        id: uid(),
-        date,
-        time,
-        notes: $("workoutNotes").value.trim(),
-        exercises: currentExercises.map(ex => ({
-          exerciseId: ex.exerciseId,
-          name: ex.name,
-          group: ex.group,
-          recoveryHours: ex.recoveryHours,
-          sets: ex.sets.map(set => ({ ...set }))
-        }))
-      };
-
-      data.workouts.push(workout);
-
-      if (!saveData()) {
-        data.workouts.pop();
-        return;
-      }
-
-      currentExercises = [];
-      $("workoutNotes").value = "";
-      renderCurrentWorkout();
-      showMessage("Entrenamiento guardado correctamente.");
-    }
-
-    function renderRecoveryList() {
-      const container = $("recoveryList");
-
-      if (!data.exercises.length) {
-        container.innerHTML =
-          '<div class="empty">No hay ejercicios. Crea uno en la sección Ejercicios.</div>';
-        return;
-      }
-
-      const previouslyOpen = new Set(
-        [...container.querySelectorAll("details[open]")].map(el => el.dataset.group)
-      );
-
-      container.innerHTML = MUSCLE_GROUPS.map(group => {
-        const exercises = data.exercises
-          .filter(ex => normaliseGroup(ex.group) === group)
-          .sort((a, b) => a.name.localeCompare(b.name, "es"));
-
-        if (!exercises.length) return "";
-
-        const readyCount = exercises.filter(ex => getRecoveryStatus(ex).ready).length;
-        const restingCount = exercises.length - readyCount;
-        const open = previouslyOpen.has(group) ? " open" : "";
-
-        const cards = exercises.map(ex => {
-          const status = getRecoveryStatus(ex);
-          const pill = status.ready
-            ? '<span class="pill ready">Recuperado</span>'
-            : `<span class="pill resting">Descanso: ${formatDuration(status.remainingMs)}</span>`;
-
-          const last = status.latest
-            ? `Última sesión: ${formatDate(status.latest.workout.date)} · ${status.latest.workout.time || "00:00"}`
-            : "Sin entrenamientos registrados";
-
-          return `
-            <div class="exercise-card">
-              <div class="exercise-top">
-                <div style="min-width:0">
-                  <div class="exercise-name">${escapeHtml(ex.name)}</div>
-                  <div class="exercise-meta">${escapeHtml(last)}</div>
-                  <div class="exercise-meta">Recuperación configurada: ${ex.recoveryHours} h</div>
-                </div>
-                ${pill}
-              </div>
-            </div>
-          `;
-        }).join("");
-
-        return `
-          <details class="muscle-folder" data-group="${escapeHtml(group)}"${open}>
-            <summary class="folder-summary">
-              <span class="folder-icon">${GROUP_ICONS[group] || "▰"}</span>
-              <span class="folder-info">
-                <span class="folder-title">${escapeHtml(group)}</span>
-                <span class="folder-count">${exercises.length} ${exercises.length === 1 ? "ejercicio" : "ejercicios"}</span>
-              </span>
-              <span class="folder-status">${readyCount} listos${restingCount ? ` · ${restingCount} descansando` : ""}</span>
-              <span class="folder-arrow">›</span>
-            </summary>
-            <div class="folder-content">${cards}</div>
-          </details>
-        `;
-      }).join("");
-    }
-
-    function renderExerciseManager() {
-      const container = $("exerciseManagerList");
-      const exercises = [...data.exercises].sort((a, b) => {
-        const groupDiff = MUSCLE_GROUPS.indexOf(a.group) - MUSCLE_GROUPS.indexOf(b.group);
-        return groupDiff || a.name.localeCompare(b.name, "es");
-      });
-
-      if (!exercises.length) {
-        container.innerHTML =
-          '<div class="empty">Todavía no tienes ejercicios. Puedes crear uno arriba.</div>';
-        return;
-      }
-
-      container.innerHTML = exercises.map(ex => `
-        <div class="exercise-card" data-exercise-card="${escapeHtml(ex.id)}">
-          <div class="grid-2">
-            <div class="field">
-              <label>Nombre del ejercicio</label>
-              <input type="text" data-name="${escapeHtml(ex.id)}" value="${escapeHtml(ex.name)}">
-            </div>
-            <div class="field">
-              <label>Grupo muscular / carpeta</label>
-              <select data-group-select="${escapeHtml(ex.id)}">
-                ${MUSCLE_GROUPS.map(group =>
-                  `<option value="${escapeHtml(group)}"${group === ex.group ? " selected" : ""}>${escapeHtml(group)}</option>`
-                ).join("")}
-              </select>
-            </div>
-          </div>
-
-          <div class="field" style="margin-top:12px">
-            <label>Recuperación (horas)</label>
-            <input type="number" min="1" max="240" data-hours="${escapeHtml(ex.id)}" value="${ex.recoveryHours}">
-          </div>
-
-          <div class="button-row">
-            <button class="btn primary" type="button" data-save-exercise="${escapeHtml(ex.id)}">Guardar cambios</button>
-            <button class="btn danger" type="button" data-delete-exercise="${escapeHtml(ex.id)}">Eliminar</button>
-          </div>
-        </div>
-      `).join("");
-
-      container.querySelectorAll("[data-save-exercise]").forEach(button => {
-        button.addEventListener("click", () => {
-          const id = button.dataset.saveExercise;
-          const exercise = getExercise(id);
-          if (!exercise) return;
-
-          const card = button.closest("[data-exercise-card]");
-          const name = card.querySelector("[data-name]").value.trim();
-          const group = card.querySelector("[data-group-select]").value;
-          const hours = Number(card.querySelector("[data-hours]").value);
-
-          if (!name) {
-            showMessage("El nombre del ejercicio no puede quedar vacío.", true);
-            return;
-          }
-
-          if (!MUSCLE_GROUPS.includes(group)) {
-            showMessage("Selecciona un grupo muscular válido.", true);
-            return;
-          }
-
-          if (!Number.isFinite(hours) || hours < 1 || hours > 240) {
-            showMessage("La recuperación debe estar entre 1 y 240 horas.", true);
-            return;
-          }
-
-          const duplicate = data.exercises.some(ex =>
-            ex.id !== id && ex.name.toLocaleLowerCase("es") === name.toLocaleLowerCase("es")
-          );
-
-          if (duplicate) {
-            showMessage("Ya existe otro ejercicio con ese nombre.", true);
-            return;
-          }
-
-          exercise.name = name;
-          exercise.group = group;
-          exercise.recoveryHours = hours;
-
-          currentExercises.forEach(item => {
-            if (item.exerciseId === id) {
-              item.name = name;
-              item.group = group;
-              item.recoveryHours = hours;
-            }
-          });
-
-          saveData();
-          showMessage(`Ejercicio actualizado y organizado en ${group}.`);
-        });
-      });
-
-      container.querySelectorAll("[data-delete-exercise]").forEach(button => {
-        button.addEventListener("click", () => {
-          const exercise = getExercise(button.dataset.deleteExercise);
-          if (!exercise) return;
-
-          if (!confirm(`¿Eliminar "${exercise.name}" de tu lista? Los registros anteriores se conservarán en el historial.`)) return;
-
-          data.exercises = data.exercises.filter(ex => ex.id !== exercise.id);
-          currentExercises = currentExercises.filter(ex => ex.exerciseId !== exercise.id);
-          saveData();
-          showMessage("Ejercicio eliminado de tu lista.");
-        });
-      });
-    }
-
-    function createExercise() {
-      const name = $("newExerciseName").value.trim();
-      const group = $("newExerciseGroup").value;
-      const hours = Number($("newExerciseRecovery").value);
-
-      if (!name) {
-        showMessage("Escribe el nombre del ejercicio.", true);
-        return;
-      }
-
-      if (!MUSCLE_GROUPS.includes(group)) {
-        showMessage("Selecciona un grupo muscular.", true);
-        return;
-      }
-
-      if (!Number.isFinite(hours) || hours < 1 || hours > 240) {
-        showMessage("La recuperación debe estar entre 1 y 240 horas.", true);
-        return;
-      }
-
-      const duplicate = data.exercises.some(ex =>
-        ex.name.toLocaleLowerCase("es") === name.toLocaleLowerCase("es")
-      );
-
-      if (duplicate) {
-        showMessage("Ya existe un ejercicio con ese nombre.", true);
-        return;
-      }
-
-      data.exercises.push({
-        id: uid(),
-        name,
-        group,
-        recoveryHours: hours
-      });
-
-      $("newExerciseName").value = "";
-      $("newExerciseRecovery").value = "48";
-
-      saveData();
-      showMessage(`Ejercicio creado en la carpeta ${group}.`);
-    }
-
-    function renderHistory() {
-      const container = $("historyList");
-      const from = historyFilter.from;
-      const to = historyFilter.to;
-
-      const workouts = [...data.workouts]
-        .filter(w => (!from || w.date >= from) && (!to || w.date <= to))
-        .sort((a, b) => {
-          const ta = new Date(`${a.date}T${a.time || "00:00"}`).getTime();
-          const tb = new Date(`${b.date}T${b.time || "00:00"}`).getTime();
-          return tb - ta;
-        });
-
-      if (!workouts.length) {
-        container.innerHTML =
-          '<div class="empty">No hay entrenamientos para mostrar con estos filtros.</div>';
-        return;
-      }
-
-      container.innerHTML = workouts.map(workout => {
-        const totalSets = workout.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
-        const totalReps = workout.exercises.reduce(
-          (sum, ex) => sum + ex.sets.reduce((sub, set) => sub + set.reps, 0), 0
-        );
-
-        return `
-          <div class="history-item">
-            <div class="exercise-top">
-              <div>
-                <div class="history-title">${escapeHtml(formatDate(workout.date))} · ${escapeHtml(workout.time || "00:00")}</div>
-                <div class="history-details">${workout.exercises.length} ejercicios · ${totalSets} series · ${totalReps} repeticiones</div>
-              </div>
-              <button class="btn danger" type="button" data-delete-workout="${escapeHtml(workout.id)}">Eliminar</button>
-            </div>
-
-            <div style="margin-top:10px">
-              ${workout.exercises.map(ex => `
-                <div style="padding:8px 0;border-top:1px solid var(--line)">
-                  <strong>${escapeHtml(ex.name)}</strong>
-                  <div class="history-details">${escapeHtml(ex.group || "Otros")}</div>
-                  <div class="history-details">
-                    ${ex.sets.map((set, index) => `Serie ${index + 1}: ${set.reps} rep. × ${set.weight} kg`).join(" · ")}
+    return `
+      <details class="folder">
+        <summary>
+          <span class="folder-icon">${GROUP_ICONS[group] || "▰"}</span>
+          <span class="folder-info">
+            <span class="folder-title">${escapeHtml(group)}</span>
+            <span class="folder-meta">${exercises.length} ejercicios · ${formatHours(GROUP_RECOVERY[group] || 48)} por defecto</span>
+          </span>
+          <span class="folder-arrow">⌄</span>
+        </summary>
+        <div class="folder-content">
+          ${
+            exercises.length
+              ? exercises.map(ex => `
+                <div class="exercise-item">
+                  <div>
+                    <div class="item-title">${escapeHtml(ex.name)}</div>
+                    <div class="item-meta">Recuperación: ${formatHours(ex.recoveryHours)}</div>
+                  </div>
+                  <div class="item-actions">
+                    <button class="btn small-btn edit-exercise" data-id="${escapeHtml(ex.id)}" type="button">Editar</button>
+                    <button class="btn small-btn danger delete-exercise" data-id="${escapeHtml(ex.id)}" type="button">Eliminar</button>
                   </div>
                 </div>
-              `).join("")}
-            </div>
-
-            ${workout.notes ? `<p class="muted small">Notas: ${escapeHtml(workout.notes)}</p>` : ""}
-          </div>
-        `;
-      }).join("");
-
-      container.querySelectorAll("[data-delete-workout]").forEach(button => {
-        button.addEventListener("click", () => {
-          if (!confirm("¿Eliminar este entrenamiento del historial?")) return;
-          data.workouts = data.workouts.filter(w => w.id !== button.dataset.deleteWorkout);
-          saveData();
-          showMessage("Entrenamiento eliminado.");
-        });
-      });
-    }
-
-    function renderStats() {
-      $("statWorkouts").textContent = data.workouts.length;
-
-      const uniqueIds = new Set();
-      data.workouts.forEach(w => w.exercises.forEach(ex => uniqueIds.add(ex.exerciseId)));
-      $("statExercises").textContent = uniqueIds.size;
-
-      $("statReady").textContent =
-        data.exercises.filter(ex => getRecoveryStatus(ex).ready).length;
-    }
-
-    function renderStorageInfo() {
-      let bytes = 0;
-
-      try {
-        bytes = new Blob([localStorage.getItem(STORAGE_KEY) || ""]).size;
-      } catch (_) {}
-
-      $("storageInfo").textContent =
-        `${data.workouts.length} entrenamientos · ${data.exercises.length} ejercicios · ${(bytes / 1024).toFixed(1)} KB almacenados en este navegador.`;
-    }
-
-    function renderAll() {
-      renderExerciseSelect();
-      renderCurrentWorkout();
-      renderRecoveryList();
-      renderExerciseManager();
-      renderHistory();
-      renderStats();
-      renderStorageInfo();
-    }
-
-    function downloadFile(filename, content, mimeType) {
-      const blob = new Blob([content], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
-
-    function exportCSV() {
-      const rows = [[
-        "Fecha", "Hora", "Grupo muscular", "Ejercicio",
-        "Serie", "Repeticiones", "Peso (kg)", "Notas"
-      ]];
-
-      data.workouts.forEach(workout => {
-        workout.exercises.forEach(ex => {
-          ex.sets.forEach((set, index) => {
-            rows.push([
-              workout.date,
-              workout.time || "",
-              ex.group || "Otros",
-              ex.name,
-              index + 1,
-              set.reps,
-              set.weight,
-              workout.notes || ""
-            ]);
-          });
-        });
-      });
-
-      const csv = "\uFEFF" + rows.map(row =>
-        row.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(";")
-      ).join("\r\n");
-
-      downloadFile(
-        `bitacora-gym-${localDateString()}.csv`,
-        csv,
-        "text/csv;charset=utf-8"
-      );
-
-      showMessage("Exportación CSV preparada.");
-    }
-
-    function backupJSON() {
-      const backup = {
-        app: "Bitácora Gym",
-        exportedAt: new Date().toISOString(),
-        data
-      };
-
-      downloadFile(
-        `bitacora-gym-respaldo-${localDateString()}.json`,
-        JSON.stringify(backup, null, 2),
-        "application/json;charset=utf-8"
-      );
-
-      showMessage("Respaldo preparado.");
-    }
-
-    async function restoreJSON() {
-      const file = $("restoreFile").files[0];
-
-      if (!file) {
-        showMessage("Selecciona primero un archivo de respaldo JSON.", true);
-        return;
-      }
-
-      try {
-        const parsed = JSON.parse(await file.text());
-        const incoming = normaliseData(parsed.data || parsed);
-
-        if (!confirm("Restaurar este respaldo reemplazará los datos actuales de Bitácora Gym en este navegador. ¿Continuar?")) {
-          return;
-        }
-
-        const previous = data;
-        data = incoming;
-
-        if (!saveData()) {
-          data = previous;
-          renderAll();
-          return;
-        }
-
-        $("restoreFile").value = "";
-        showMessage("Respaldo restaurado correctamente.");
-      } catch (error) {
-        console.error(error);
-        showMessage("No se pudo restaurar el archivo. Comprueba que sea un respaldo JSON válido.", true);
-      }
-    }
-
-    function clearAllData() {
-      if (!confirm("¿Seguro que quieres eliminar todos los ejercicios y entrenamientos de este navegador? Esta acción no se puede deshacer. Descarga un respaldo antes si lo necesitas.")) {
-        return;
-      }
-
-      data = defaultData();
-      currentExercises = [];
-      currentSets = [{ reps: 10, weight: 0 }];
-      $("workoutNotes").value = "";
-
-      if (saveData()) {
-        renderSets();
-        showMessage("Datos eliminados. Se restauraron los ejercicios predeterminados.");
-      }
-    }
-
-    function initSupabase() {
-      if (!window.supabase || !window.supabase.createClient) {
-        $("connectionStatus").textContent = "Modo local";
-        $("authMessage").textContent =
-          "No se pudo cargar el servicio de autenticación. Puedes seguir usando los registros locales.";
-        return;
-      }
-
-      try {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        $("connectionStatus").textContent = "Autenticación disponible";
-
-        supabaseClient.auth.getSession().then(({ data: result, error }) => {
-          if (error) throw error;
-          updateAuthUI(result.session);
-        }).catch(error => {
-          console.error(error);
-          $("authMessage").textContent =
-            "No se pudo comprobar la sesión. Puedes seguir usando la app local.";
-        });
-
-        supabaseClient.auth.onAuthStateChange((_event, session) => updateAuthUI(session));
-      } catch (error) {
-        console.error(error);
-        $("connectionStatus").textContent = "Modo local";
-        $("authMessage").textContent = "La autenticación no está disponible en este momento.";
-      }
-    }
-
-    function updateAuthUI(session) {
-      if (session && session.user) {
-        $("authMessage").textContent =
-          `Sesión iniciada: ${session.user.email}. Los entrenamientos todavía se guardan solo en este navegador.`;
-        $("connectionStatus").textContent = "Sesión iniciada";
-      } else {
-        $("authMessage").textContent = "No has iniciado sesión.";
-        $("connectionStatus").textContent = "Modo local";
-      }
-    }
-
-    async function registerUser() {
-      if (!supabaseClient) {
-        $("authMessage").textContent =
-          "La autenticación no está disponible. Revisa la configuración de Supabase.";
-        return;
-      }
-
-      const email = $("authEmail").value.trim();
-      const password = $("authPassword").value;
-
-      if (!email || !password) {
-        $("authMessage").textContent = "Ingresa tu correo y contraseña.";
-        return;
-      }
-
-      if (password.length < 6) {
-        $("authMessage").textContent = "La contraseña debe tener al menos 6 caracteres.";
-        return;
-      }
-
-      $("registerBtn").disabled = true;
-
-      try {
-        const { data: result, error } = await supabaseClient.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: "https://mgonzalezldsp-blip.github.io/bitacora-gym./"
+              `).join("")
+              : `<p class="small muted">Esta carpeta no tiene ejercicios todavía.</p>`
           }
-        });
+        </div>
+      </details>
+    `;
+  }).join("") || `<div class="empty">No hay resultados para esa búsqueda.</div>`;
 
-        if (error) throw error;
+  $("exerciseFolders").querySelectorAll(".edit-exercise").forEach(button => {
+    button.addEventListener("click", () => editExercise(button.dataset.id));
+  });
+  $("exerciseFolders").querySelectorAll(".delete-exercise").forEach(button => {
+    button.addEventListener("click", () => deleteExercise(button.dataset.id));
+  });
+}
 
-        $("authMessage").textContent = result.session
-          ? "Cuenta creada e iniciada correctamente."
-          : "Cuenta creada. Si Supabase solicita confirmar tu correo, revisa tu bandeja de entrada.";
-      } catch (error) {
-        console.error(error);
-        $("authMessage").textContent = error.message || "No se pudo crear la cuenta.";
-      } finally {
-        $("registerBtn").disabled = false;
+function resetExerciseForm() {
+  $("editExerciseId").value = "";
+  $("newExerciseName").value = "";
+  $("newExerciseGroup").value = "Pectoral";
+  $("newExerciseRecovery").value = "48";
+  $("exerciseFormTitle").textContent = "Agregar ejercicio";
+  $("saveExerciseBtn").textContent = "Guardar ejercicio";
+  $("cancelEditBtn").hidden = true;
+}
+
+function editExercise(id) {
+  const ex = data.exercises.find(item => item.id === id);
+  if (!ex) return;
+
+  $("editExerciseId").value = ex.id;
+  $("newExerciseName").value = ex.name;
+  $("newExerciseGroup").value = ex.group;
+  $("newExerciseRecovery").value = ex.recoveryHours;
+  $("exerciseFormTitle").textContent = "Editar ejercicio";
+  $("saveExerciseBtn").textContent = "Guardar cambios";
+  $("cancelEditBtn").hidden = false;
+  $("newExerciseName").focus();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function saveExercise(event) {
+  event.preventDefault();
+  const id = $("editExerciseId").value;
+  const name = $("newExerciseName").value.trim();
+  const group = $("newExerciseGroup").value;
+  const recoveryHours = Number($("newExerciseRecovery").value);
+
+  if (!name) return toast("Escribe el nombre del ejercicio.");
+  if (!MUSCLE_GROUPS.includes(group)) return toast("Selecciona un grupo válido.");
+  if (!Number.isFinite(recoveryHours) || recoveryHours < 1 || recoveryHours > 240) {
+    return toast("La recuperación debe estar entre 1 y 240 horas.");
+  }
+
+  const duplicate = data.exercises.some(ex =>
+    ex.id !== id && ex.name.toLocaleLowerCase("es") === name.toLocaleLowerCase("es")
+  );
+  if (duplicate) return toast("Ya existe un ejercicio con ese nombre.");
+
+  if (id) {
+    const index = data.exercises.findIndex(ex => ex.id === id);
+    if (index < 0) return toast("No se encontró ese ejercicio.");
+    data.exercises[index] = { id, name, group, recoveryHours };
+    data.workouts.forEach(w => {
+      if (w.exerciseId === id) {
+        w.exerciseName = name;
+        w.group = group;
+        w.recoveryHours = recoveryHours;
       }
+    });
+    toast("Ejercicio actualizado.");
+  } else {
+    data.exercises.push({ id: makeId(), name, group, recoveryHours });
+    toast("Ejercicio agregado.");
+  }
+
+  saveData();
+  resetExerciseForm();
+  renderAll();
+}
+
+function deleteExercise(id) {
+  const ex = data.exercises.find(item => item.id === id);
+  if (!ex) return;
+  if (!confirm(`¿Eliminar el ejercicio "${ex.name}" de la biblioteca? El historial registrado se conservará.`)) return;
+
+  data.exercises = data.exercises.filter(item => item.id !== id);
+  saveData();
+  renderAll();
+  toast("Ejercicio eliminado de la biblioteca.");
+}
+
+function renderHistory() {
+  const filter = $("historyFilter").value || "Todos";
+  const search = $("historySearch").value.trim().toLocaleLowerCase("es");
+
+  const list = [...data.workouts]
+    .filter(w => filter === "Todos" || normaliseGroup(w.group, w.exerciseName) === filter)
+    .filter(w => w.exerciseName.toLocaleLowerCase("es").includes(search))
+    .sort((a, b) => {
+      const da = new Date(a.date + "T12:00:00").getTime();
+      const db = new Date(b.date + "T12:00:00").getTime();
+      return db - da;
+    });
+
+  $("historyCountLabel").textContent = `${list.length} sesiones`;
+
+  if (!list.length) {
+    $("historyList").innerHTML = `<div class="empty">No hay entrenamientos para mostrar.</div>`;
+    return;
+  }
+
+  $("historyList").innerHTML = list.map(w => {
+    const sets = Array.isArray(w.sets) ? w.sets : [];
+    const totalVolume = sets.reduce((sum, set) =>
+      sum + (Number(set.reps) || 0) * (Number(set.weight) || 0), 0);
+    const setText = sets.map((s, i) =>
+      `S${i + 1}: ${Number(s.reps) || 0} reps × ${Number(s.weight) || 0} kg`
+    ).join(" · ");
+
+    return `
+      <div class="history-item">
+        <div style="flex:1;min-width:0">
+          <div class="item-title">${escapeHtml(w.exerciseName)}</div>
+          <div class="item-meta">${escapeHtml(w.group || "Otros")} · ${escapeHtml(formatDate(w.date))}</div>
+          <div class="small" style="margin-top:7px">${escapeHtml(setText || "Sin series")}</div>
+          ${w.notes ? `<div class="small muted" style="margin-top:6px">Nota: ${escapeHtml(w.notes)}</div>` : ""}
+          <div class="small muted" style="margin-top:5px">Volumen registrado: ${totalVolume.toLocaleString("es-CL")} kg-repetición</div>
+        </div>
+        <div class="item-actions">
+          <button class="btn small-btn danger delete-workout" data-id="${escapeHtml(w.id)}" type="button">Eliminar</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  $("historyList").querySelectorAll(".delete-workout").forEach(button => {
+    button.addEventListener("click", () => deleteWorkout(button.dataset.id));
+  });
+}
+
+function deleteWorkout(id) {
+  if (!confirm("¿Eliminar este entrenamiento del historial?")) return;
+  data.workouts = data.workouts.filter(w => w.id !== id);
+  saveData();
+  renderAll();
+  toast("Entrenamiento eliminado.");
+}
+
+function renderStats() {
+  $("statWorkouts").textContent = data.workouts.length;
+  $("statExercises").textContent = data.exercises.length;
+  $("statGroups").textContent = MUSCLE_GROUPS.length;
+  $("exerciseCountLabel").textContent = `${data.exercises.length} ejercicios`;
+}
+
+function renderAll() {
+  renderStats();
+  renderExerciseSelect();
+  renderExerciseFolders();
+  renderHistory();
+  renderRecoveryList();
+}
+
+function exportJson() {
+  const blob = new Blob([JSON.stringify({
+    app: "Bitácora Gym",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    data
+  }, null, 2)], { type: "application/json;charset=utf-8" });
+  downloadBlob(blob, `bitacora-gym-respaldo-${today()}.json`);
+  toast("Copia de seguridad exportada.");
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportCsv() {
+  const rows = [
+    ["Fecha", "Grupo muscular", "Ejercicio", "Serie", "Repeticiones", "Peso kg", "Notas"]
+  ];
+  for (const w of data.workouts) {
+    const sets = Array.isArray(w.sets) ? w.sets : [];
+    if (!sets.length) rows.push([w.date, w.group, w.exerciseName, "", "", "", w.notes || ""]);
+    sets.forEach((s, i) => rows.push([
+      w.date, w.group, w.exerciseName, i + 1, s.reps, s.weight, w.notes || ""
+    ]));
+  }
+  const csv = rows.map(row => row.map(value =>
+    `"${String(value ?? "").replace(/"/g, '""')}"`
+  ).join(";")).join("\r\n");
+  downloadBlob(new Blob(["\uFEFF" + csv], {
+    type: "text/csv;charset=utf-8"
+  }), `bitacora-gym-historial-${today()}.csv`);
+  toast("Historial CSV exportado.");
+}
+
+async function importJsonFile(file) {
+  if (!file) return;
+  try {
+    const parsed = JSON.parse(await file.text());
+    const incoming = normaliseData(parsed.data || parsed);
+    if (!Array.isArray(incoming.exercises) || !Array.isArray(incoming.workouts)) {
+      throw new Error("Formato inválido");
     }
+    if (!confirm("La importación reemplazará los datos actuales de este navegador. ¿Continuar?")) return;
+    data = incoming;
+    saveData();
+    resetExerciseForm();
+    renderAll();
+    toast("Copia importada correctamente.");
+  } catch (err) {
+    console.error(err);
+    toast("No se pudo importar. Verifica que el archivo sea un respaldo JSON válido.");
+  } finally {
+    $("importFile").value = "";
+  }
+}
 
-    async function loginUser() {
-      if (!supabaseClient) {
-        $("authMessage").textContent =
-          "La autenticación no está disponible. Revisa la configuración de Supabase.";
-        return;
-      }
+/*
+ * AUTENTICACIÓN SUPABASE
+ * La autenticación es opcional. No se suben los entrenamientos a Supabase.
+ */
+const SUPABASE_URL = "https://qfndlwotpmbgjtgfdbfk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_FiZZJrXX6Pna1RTiny9y1g_IDsMJHY-";
+let supabaseClient = null;
+let currentUser = null;
 
-      const email = $("authEmail").value.trim();
-      const password = $("authPassword").value;
-
-      if (!email || !password) {
-        $("authMessage").textContent = "Ingresa tu correo y contraseña.";
-        return;
-      }
-
-      $("loginBtn").disabled = true;
-
-      try {
-        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+function initSupabase() {
+  try {
+    if (window.supabase && window.supabase.createClient) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      supabaseClient.auth.getSession().then(({ data: sessionData, error }) => {
         if (error) throw error;
-        $("authMessage").textContent = "Sesión iniciada correctamente.";
-      } catch (error) {
-        console.error(error);
-        $("authMessage").textContent = error.message || "No se pudo iniciar sesión.";
-      } finally {
-        $("loginBtn").disabled = false;
-      }
-    }
-
-    async function logoutUser() {
-      if (!supabaseClient) {
-        $("authMessage").textContent = "La autenticación no está disponible.";
-        return;
-      }
-
-      try {
-        const { error } = await supabaseClient.auth.signOut();
-        if (error) throw error;
-        $("authMessage").textContent = "Sesión cerrada.";
-      } catch (error) {
-        console.error(error);
-        $("authMessage").textContent = error.message || "No se pudo cerrar sesión.";
-      }
-    }
-
-    function bindEvents() {
-      $("exerciseSelect").addEventListener("change", renderRecoveryInfo);
-
-      // CORRECCIÓN PRINCIPAL:
-      // Fuerza a respetar la carpeta seleccionada manualmente.
-      $("exerciseGroupSelect").addEventListener("change", () => {
-        renderExerciseSelect(true);
+        currentUser = sessionData.session?.user || null;
+        renderAuth();
+      }).catch(err => {
+        console.warn("No se pudo consultar la sesión", err);
       });
 
-      $("addSetBtn").addEventListener("click", addSet);
-      $("addExerciseBtn").addEventListener("click", addExerciseToCurrent);
-      $("saveWorkoutBtn").addEventListener("click", saveWorkout);
-      $("createExerciseBtn").addEventListener("click", createExercise);
-
-      fillGroupSelect($("newExerciseGroup"), "Pecho");
-
-      $("clearCurrentBtn").addEventListener("click", () => {
-        if (!currentExercises.length) return;
-        if (!confirm("¿Vaciar los ejercicios de esta sesión sin guardarlos?")) return;
-
-        currentExercises = [];
-        renderCurrentWorkout();
-        showMessage("Sesión vaciada.");
+      supabaseClient.auth.onAuthStateChange((_event, session) => {
+        currentUser = session?.user || null;
+        renderAuth();
       });
+    }
+  } catch (err) {
+    console.error("Supabase no se pudo inicializar", err);
+  }
+}
 
-      $("filterHistoryBtn").addEventListener("click", () => {
-        const from = $("historyFrom").value;
-        const to = $("historyTo").value;
+function renderAuth() {
+  const signedIn = !!currentUser;
+  $("authSignedOut").hidden = signedIn;
+  $("authSignedIn").hidden = !signedIn;
+  $("authUserLabel").textContent = signedIn
+    ? `Sesión iniciada: ${currentUser.email || "usuario"}`
+    : "";
+}
 
-        if (from && to && from > to) {
-          showMessage("La fecha inicial no puede ser posterior a la fecha final.", true);
-          return;
+async function authAction(action) {
+  if (!supabaseClient) {
+    $("authMessage").textContent = "No se pudo conectar con el servicio de autenticación. Revisa tu conexión.";
+    return;
+  }
+
+  const email = $("authEmail").value.trim();
+  const password = $("authPassword").value;
+  if (action !== "signout" && (!email || !password)) {
+    $("authMessage").textContent = "Ingresa tu correo y contraseña.";
+    return;
+  }
+  if (action !== "signout" && password.length < 6) {
+    $("authMessage").textContent = "La contraseña debe tener al menos 6 caracteres.";
+    return;
+  }
+
+  $("authMessage").textContent = "Procesando...";
+  try {
+    let result;
+    if (action === "signup") {
+      result = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: "https://mgonzalezldsp-blip.github.io/bitacora-gym./"
         }
-
-        historyFilter = { from, to };
-        renderHistory();
       });
-
-      $("clearFilterBtn").addEventListener("click", () => {
-        $("historyFrom").value = "";
-        $("historyTo").value = "";
-        historyFilter = { from: "", to: "" };
-        renderHistory();
-      });
-
-      $("exportCsvBtn").addEventListener("click", exportCSV);
-      $("backupBtn").addEventListener("click", backupJSON);
-      $("restoreBtn").addEventListener("click", restoreJSON);
-      $("clearAllBtn").addEventListener("click", clearAllData);
-
-      $("registerBtn").addEventListener("click", registerUser);
-      $("loginBtn").addEventListener("click", loginUser);
-      $("logoutBtn").addEventListener("click", logoutUser);
+    } else if (action === "signin") {
+      result = await supabaseClient.auth.signInWithPassword({ email, password });
+    } else {
+      result = await supabaseClient.auth.signOut();
     }
 
-    function init() {
-      initTabs();
-      initDateTime();
-      bindEvents();
-      renderSets();
-      renderAll();
-      initSupabase();
-    }
+    if (result.error) throw result.error;
+    currentUser = result.data?.user || null;
+    renderAuth();
 
-    init();
-  </script>
+    $("authMessage").textContent = action === "signup"
+      ? "Solicitud enviada. Si Supabase requiere confirmación, revisa tu correo."
+      : action === "signin"
+        ? "Sesión iniciada correctamente."
+        : "Sesión cerrada.";
+
+  } catch (err) {
+    $("authMessage").textContent = err.message || "No se pudo completar la operación.";
+  }
+}
+
+function setupTabs() {
+  document.querySelectorAll("nav button[data-tab]").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll("nav button").forEach(item => item.classList.remove("active"));
+      document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+      button.classList.add("active");
+      $("page-" + button.dataset.tab).classList.add("active");
+    });
+  });
+}
+
+function init() {
+  fillGroupSelect($("exerciseGroupSelect"));
+  fillGroupSelect($("newExerciseGroup"));
+  fillGroupSelect($("historyFilter"), true);
+
+  $("exerciseGroupSelect").value = "Pectoral";
+  $("newExerciseGroup").value = "Pectoral";
+  $("historyFilter").value = "Todos";
+  $("workoutDate").value = today();
+
+  $("exerciseGroupSelect").addEventListener("change", () => {
+    renderExerciseSelect(true);
+  });
+  $("exerciseSelect").addEventListener("change", updateWorkoutRecovery);
+  $("addSetBtn").addEventListener("click", () => addSetRow());
+  $("saveWorkoutBtn").addEventListener("click", saveWorkout);
+  $("exerciseForm").addEventListener("submit", saveExercise);
+  $("cancelEditBtn").addEventListener("click", resetExerciseForm);
+  $("exerciseSearch").addEventListener("input", renderExerciseFolders);
+  $("historyFilter").addEventListener("change", renderHistory);
+  $("historySearch").addEventListener("input", renderHistory);
+
+  $("exportJsonBtn").addEventListener("click", exportJson);
+  $("exportCsvBtn").addEventListener("click", exportCsv);
+  $("importJsonBtn").addEventListener("click", () => $("importFile").click());
+  $("importFile").addEventListener("change", event => importJsonFile(event.target.files[0]));
+
+  $("clearWorkoutsBtn").addEventListener("click", () => {
+    if (!confirm("¿Borrar todo el historial de entrenamientos? Los ejercicios se conservarán.")) return;
+    data.workouts = [];
+    saveData();
+    renderAll();
+    toast("Historial borrado.");
+  });
+
+  $("resetAllBtn").addEventListener("click", () => {
+    if (!confirm("Esto reemplazará todos los datos locales por los ejercicios iniciales y borrará el historial. Exporta un respaldo antes. ¿Continuar?")) return;
+    data = defaultData();
+    saveData();
+    resetExerciseForm();
+    renderAll();
+    toast("Aplicación restablecida.");
+  });
+
+  $("signInBtn").addEventListener("click", () => authAction("signin"));
+  $("signUpBtn").addEventListener("click", () => authAction("signup"));
+  $("signOutBtn").addEventListener("click", () => authAction("signout"));
+
+  setupTabs();
+  addSetRow();
+  renderAll();
+  initSupabase();
+}
+
+init();
+</script>
 </body>
 </html>
