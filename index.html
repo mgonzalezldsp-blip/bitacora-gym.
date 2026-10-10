@@ -27,8 +27,7 @@
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 15px;
       line-height: 1.5;
     }
@@ -211,12 +210,6 @@
       gap: 12px;
     }
 
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
     .button-row {
       display: flex;
       flex-wrap: wrap;
@@ -364,7 +357,7 @@
       margin-bottom: 14px;
     }
 
-    /* CARPETAS DE RECUPERACIÓN */
+    /* Carpetas de recuperación */
     .muscle-folder {
       background: #121212;
       border: 1px solid var(--line);
@@ -399,10 +392,7 @@
 
     .folder-info { flex: 1; min-width: 0; }
 
-    .folder-title {
-      font-weight: 850;
-      font-size: 14px;
-    }
+    .folder-title { font-weight: 850; font-size: 14px; }
 
     .folder-count {
       color: var(--muted);
@@ -430,9 +420,7 @@
       border-top: 1px solid var(--line);
     }
 
-    .folder-content .exercise-card {
-      margin-top: 10px;
-    }
+    .folder-content .exercise-card { margin-top: 10px; }
 
     .group-chip {
       display: inline-block;
@@ -461,7 +449,7 @@
       .stats { gap: 7px; }
       .stat { padding: 11px; }
       .stat-label { font-size: 10px; }
-      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
       .set-row { grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr); gap: 6px; }
       .button-row .btn { flex: 1 1 auto; }
       .folder-summary { gap: 9px; padding: 12px; }
@@ -525,7 +513,12 @@
         <div class="divider"></div>
 
         <div class="field">
-          <label for="exerciseSelect">Selecciona un ejercicio</label>
+          <label for="exerciseGroupSelect">1. Selecciona una carpeta</label>
+          <select id="exerciseGroupSelect"></select>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="exerciseSelect">2. Selecciona un ejercicio</label>
           <select id="exerciseSelect"></select>
         </div>
 
@@ -556,10 +549,7 @@
 
       <div class="panel">
         <h2>Estado de recuperación</h2>
-        <p class="muted small">
-          Abre cada carpeta para consultar los ejercicios de ese grupo muscular.
-          Los estados se calculan según las horas de recuperación configuradas.
-        </p>
+        <p class="muted small">Abre cada carpeta para consultar los ejercicios de ese grupo muscular. El estado se calcula según las horas de recuperación configuradas.</p>
         <div id="recoveryList"></div>
       </div>
     </section>
@@ -589,10 +579,7 @@
 
       <div class="panel">
         <h2>Mis ejercicios</h2>
-        <p class="muted small">
-          Cambia el nombre, grupo muscular y recuperación de cada ejercicio.
-          Al guardar el grupo, el ejercicio se moverá automáticamente a su carpeta.
-        </p>
+        <p class="muted small">Cambia el nombre, grupo muscular y recuperación. El ejercicio se moverá automáticamente a la carpeta seleccionada.</p>
         <div id="exerciseManagerList"></div>
       </div>
     </section>
@@ -610,10 +597,12 @@
             <input type="date" id="historyTo">
           </div>
         </div>
+
         <div class="button-row">
           <button class="btn" id="filterHistoryBtn" type="button">Filtrar</button>
           <button class="btn" id="clearFilterBtn" type="button">Quitar filtros</button>
         </div>
+
         <div class="divider"></div>
         <div id="historyList"></div>
       </div>
@@ -622,25 +611,25 @@
     <section class="view" id="view-ajustes">
       <div class="panel">
         <h2>Cuenta</h2>
-        <p class="muted small">
-          La autenticación utiliza Supabase. En esta versión, los entrenamientos
-          se guardan en este navegador y no se sincronizan automáticamente entre dispositivos.
-        </p>
+        <p class="muted small">La autenticación utiliza Supabase. En esta versión, los entrenamientos se guardan en este navegador y no se sincronizan automáticamente entre dispositivos.</p>
 
         <div class="auth-box">
           <div class="field">
             <label for="authEmail">Correo electrónico</label>
             <input id="authEmail" type="email" autocomplete="email" placeholder="tu@correo.com">
           </div>
+
           <div class="field" style="margin-top:10px">
             <label for="authPassword">Contraseña (mínimo 6 caracteres)</label>
             <input id="authPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña">
           </div>
+
           <div class="button-row">
             <button class="btn primary" id="loginBtn" type="button">Iniciar sesión</button>
             <button class="btn" id="registerBtn" type="button">Crear cuenta</button>
             <button class="btn" id="logoutBtn" type="button">Cerrar sesión</button>
           </div>
+
           <p class="muted small" id="authMessage" aria-live="polite"></p>
         </div>
 
@@ -648,6 +637,7 @@
 
         <h2>Exportar y respaldar datos</h2>
         <p class="muted small">Descarga una copia de tus registros para conservarlos.</p>
+
         <div class="button-row">
           <button class="btn primary" id="exportCsvBtn" type="button">Exportar CSV</button>
           <button class="btn" id="backupBtn" type="button">Descargar respaldo JSON</button>
@@ -657,6 +647,7 @@
           <label for="restoreFile">Restaurar respaldo JSON</label>
           <input type="file" id="restoreFile" accept=".json,application/json">
         </div>
+
         <div class="button-row">
           <button class="btn" id="restoreBtn" type="button">Restaurar datos</button>
         </div>
@@ -681,7 +672,6 @@
     const SUPABASE_KEY = "sb_publishable_FiZZJrXX6Pna1RTiny9y1g_IDsMJHY-";
     const STORAGE_KEY = "bitacoraGym.v1";
 
-    // Estas categorías alimentan las carpetas de Estado de recuperación.
     const MUSCLE_GROUPS = [
       "Pecho",
       "Espalda",
@@ -748,7 +738,8 @@
 
     function inferDefaultExercise(id, name) {
       return DEFAULT_EXERCISES.find(ex =>
-        ex.id === id || ex.name.toLocaleLowerCase("es") === String(name || "").toLocaleLowerCase("es")
+        ex.id === id ||
+        ex.name.toLocaleLowerCase("es") === String(name || "").toLocaleLowerCase("es")
       );
     }
 
@@ -761,10 +752,8 @@
     }
 
     function normaliseData(raw) {
-      const fallback = defaultData();
-
       if (!raw || !Array.isArray(raw.exercises) || !Array.isArray(raw.workouts)) {
-        return fallback;
+        return defaultData();
       }
 
       const exercises = raw.exercises.map(ex => {
@@ -844,6 +833,7 @@
       document.querySelectorAll(".tab").forEach(button => {
         button.classList.toggle("active", button.dataset.view === name);
       });
+
       document.querySelectorAll(".view").forEach(view => {
         view.classList.toggle("active", view.id === "view-" + name);
       });
@@ -861,6 +851,7 @@
 
     function initDateTime() {
       $("workoutDate").value = localDateString();
+
       const now = new Date();
       $("workoutTime").value =
         String(now.getHours()).padStart(2, "0") + ":" +
@@ -877,7 +868,11 @@
       for (const workout of data.workouts) {
         for (const ex of workout.exercises) {
           if (ex.exerciseId !== exerciseId) continue;
-          const timestamp = new Date(`${workout.date}T${workout.time || "00:00"}`).getTime();
+
+          const timestamp = new Date(
+            `${workout.date}T${workout.time || "00:00"}`
+          ).getTime();
+
           if (!Number.isFinite(timestamp)) continue;
 
           if (!latest || timestamp > latest.timestamp) {
@@ -892,7 +887,9 @@
     function getRecoveryStatus(exercise) {
       const latest = getLatestWorkoutForExercise(exercise.id);
 
-      if (!latest) return { ready: true, remainingMs: 0, latest: null };
+      if (!latest) {
+        return { ready: true, remainingMs: 0, latest: null };
+      }
 
       const requiredMs = (Number(exercise.recoveryHours) || 48) * 3600000;
       const remainingMs = requiredMs - (Date.now() - latest.timestamp);
@@ -918,7 +915,9 @@
     function formatDate(dateString) {
       if (!dateString) return "Sin fecha";
       const parts = dateString.split("-");
-      return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : dateString;
+      return parts.length === 3
+        ? `${parts[2]}/${parts[1]}/${parts[0]}`
+        : dateString;
     }
 
     function fillGroupSelect(select, selected = "Otros") {
@@ -927,16 +926,58 @@
       ).join("");
     }
 
+    // Selector por carpeta: solo muestra los ejercicios del grupo elegido.
     function renderExerciseSelect() {
-      const select = $("exerciseSelect");
-      const previous = select.value;
-      const sorted = [...data.exercises].sort((a, b) => a.name.localeCompare(b.name, "es"));
+      const groupSelect = $("exerciseGroupSelect");
+      const exerciseSelect = $("exerciseSelect");
 
-      select.innerHTML = sorted.map(ex =>
-        `<option value="${escapeHtml(ex.id)}">${escapeHtml(ex.name)} · ${escapeHtml(ex.group)}</option>`
-      ).join("");
+      if (!groupSelect || !exerciseSelect) return;
 
-      if (sorted.some(ex => ex.id === previous)) select.value = previous;
+      const previousExercise = exerciseSelect.value;
+      const previousGroup = groupSelect.value;
+
+      const groupsWithExercises = MUSCLE_GROUPS.filter(group =>
+        data.exercises.some(ex => normaliseGroup(ex.group) === group)
+      );
+
+      groupSelect.innerHTML = groupsWithExercises.map(group => {
+        const count = data.exercises.filter(
+          ex => normaliseGroup(ex.group) === group
+        ).length;
+
+        return `<option value="${escapeHtml(group)}">${escapeHtml(group)} (${count})</option>`;
+      }).join("");
+
+      const previousExerciseStillExists = data.exercises.find(
+        ex => ex.id === previousExercise
+      );
+
+      let selectedGroup = groupsWithExercises.includes(previousGroup)
+        ? previousGroup
+        : groupsWithExercises[0];
+
+      if (previousExerciseStillExists) {
+        selectedGroup = normaliseGroup(previousExerciseStillExists.group);
+      }
+
+      if (selectedGroup) {
+        groupSelect.value = selectedGroup;
+      }
+
+      const exercisesInGroup = data.exercises
+        .filter(ex => normaliseGroup(ex.group) === groupSelect.value)
+        .sort((a, b) => a.name.localeCompare(b.name, "es"));
+
+      exerciseSelect.innerHTML = exercisesInGroup.length
+        ? exercisesInGroup.map(ex =>
+            `<option value="${escapeHtml(ex.id)}">${escapeHtml(ex.name)}</option>`
+          ).join("")
+        : '<option value="">No hay ejercicios en esta carpeta</option>';
+
+      if (exercisesInGroup.some(ex => ex.id === previousExercise)) {
+        exerciseSelect.value = previousExercise;
+      }
+
       renderRecoveryInfo();
     }
 
@@ -944,11 +985,13 @@
       const exercise = getExercise($("exerciseSelect").value);
 
       if (!exercise) {
-        $("exerciseRecoveryInfo").textContent = "Primero agrega un ejercicio en la sección Ejercicios.";
+        $("exerciseRecoveryInfo").textContent =
+          "No hay ejercicios en esta carpeta. Puedes crear uno en la sección Ejercicios.";
         return;
       }
 
       const status = getRecoveryStatus(exercise);
+
       $("exerciseRecoveryInfo").textContent = status.ready
         ? `${exercise.group} · Recuperación estimada: ${exercise.recoveryHours} h. Estado: recuperado según el tiempo configurado.`
         : `${exercise.group} · Recuperación estimada: ${exercise.recoveryHours} h. Tiempo restante: ${formatDuration(status.remainingMs)}.`;
@@ -973,13 +1016,15 @@
 
       $("setsContainer").querySelectorAll("[data-set-reps]").forEach(input => {
         input.addEventListener("input", () => {
-          currentSets[Number(input.dataset.setReps)].reps = Math.max(0, Number(input.value) || 0);
+          currentSets[Number(input.dataset.setReps)].reps =
+            Math.max(0, Number(input.value) || 0);
         });
       });
 
       $("setsContainer").querySelectorAll("[data-set-weight]").forEach(input => {
         input.addEventListener("input", () => {
-          currentSets[Number(input.dataset.setWeight)].weight = Math.max(0, Number(input.value) || 0);
+          currentSets[Number(input.dataset.setWeight)].weight =
+            Math.max(0, Number(input.value) || 0);
         });
       });
     }
@@ -988,7 +1033,8 @@
       const container = $("currentWorkoutList");
 
       if (!currentExercises.length) {
-        container.innerHTML = '<div class="empty">Todavía no agregas ejercicios a esta sesión.</div>';
+        container.innerHTML =
+          '<div class="empty">Todavía no agregas ejercicios a esta sesión.</div>';
         return;
       }
 
@@ -1025,7 +1071,7 @@
       const exercise = getExercise($("exerciseSelect").value);
 
       if (!exercise) {
-        showMessage("Crea o selecciona un ejercicio primero.", true);
+        showMessage("Selecciona un ejercicio válido.", true);
         return;
       }
 
@@ -1094,12 +1140,12 @@
       showMessage("Entrenamiento guardado correctamente.");
     }
 
-    // Agrupa dinámicamente todos los ejercicios por grupo muscular.
     function renderRecoveryList() {
       const container = $("recoveryList");
 
       if (!data.exercises.length) {
-        container.innerHTML = '<div class="empty">No hay ejercicios. Crea uno en la sección Ejercicios.</div>';
+        container.innerHTML =
+          '<div class="empty">No hay ejercicios. Crea uno en la sección Ejercicios.</div>';
         return;
       }
 
@@ -1167,7 +1213,8 @@
       });
 
       if (!exercises.length) {
-        container.innerHTML = '<div class="empty">Todavía no tienes ejercicios. Puedes crear uno arriba.</div>';
+        container.innerHTML =
+          '<div class="empty">Todavía no tienes ejercicios. Puedes crear uno arriba.</div>';
         return;
       }
 
@@ -1226,21 +1273,18 @@
             return;
           }
 
+          const duplicate = data.exercises.some(ex =>
+            ex.id !== id && ex.name.toLocaleLowerCase("es") === name.toLocaleLowerCase("es")
+          );
+
+          if (duplicate) {
+            showMessage("Ya existe otro ejercicio con ese nombre.", true);
+            return;
+          }
+
           exercise.name = name;
           exercise.group = group;
           exercise.recoveryHours = hours;
-
-          // Actualiza los registros antiguos relacionados con el ejercicio.
-          // La sesión histórica conserva los datos del ejercicio que se guardaron.
-          data.workouts.forEach(workout => {
-            workout.exercises.forEach(item => {
-              if (item.exerciseId === id) {
-                item.name = name;
-                item.group = group;
-                item.recoveryHours = hours;
-              }
-            });
-          });
 
           currentExercises.forEach(item => {
             if (item.exerciseId === id) {
@@ -1263,6 +1307,7 @@
           if (!confirm(`¿Eliminar "${exercise.name}" de tu lista? Los registros anteriores se conservarán en el historial.`)) return;
 
           data.exercises = data.exercises.filter(ex => ex.id !== exercise.id);
+          currentExercises = currentExercises.filter(ex => ex.exerciseId !== exercise.id);
           saveData();
           showMessage("Ejercicio eliminado de tu lista.");
         });
@@ -1307,7 +1352,6 @@
 
       $("newExerciseName").value = "";
       $("newExerciseRecovery").value = "48";
-      $("newExerciseGroup").value = group;
 
       saveData();
       showMessage(`Ejercicio creado en la carpeta ${group}.`);
@@ -1327,7 +1371,8 @@
         });
 
       if (!workouts.length) {
-        container.innerHTML = '<div class="empty">No hay entrenamientos para mostrar con estos filtros.</div>';
+        container.innerHTML =
+          '<div class="empty">No hay entrenamientos para mostrar con estos filtros.</div>';
         return;
       }
 
@@ -1410,11 +1455,13 @@
       const blob = new Blob([content], { type: mimeType });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
+
       link.href = url;
       link.download = filename;
       document.body.appendChild(link);
       link.click();
       link.remove();
+
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
@@ -1445,7 +1492,12 @@
         row.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(";")
       ).join("\r\n");
 
-      downloadFile(`bitacora-gym-${localDateString()}.csv`, csv, "text/csv;charset=utf-8");
+      downloadFile(
+        `bitacora-gym-${localDateString()}.csv`,
+        csv,
+        "text/csv;charset=utf-8"
+      );
+
       showMessage("Exportación CSV preparada.");
     }
 
@@ -1517,7 +1569,8 @@
     function initSupabase() {
       if (!window.supabase || !window.supabase.createClient) {
         $("connectionStatus").textContent = "Modo local";
-        $("authMessage").textContent = "No se pudo cargar el servicio de autenticación. Puedes seguir usando los registros locales.";
+        $("authMessage").textContent =
+          "No se pudo cargar el servicio de autenticación. Puedes seguir usando los registros locales.";
         return;
       }
 
@@ -1530,7 +1583,8 @@
           updateAuthUI(result.session);
         }).catch(error => {
           console.error(error);
-          $("authMessage").textContent = "No se pudo comprobar la sesión. Puedes seguir usando la app local.";
+          $("authMessage").textContent =
+            "No se pudo comprobar la sesión. Puedes seguir usando la app local.";
         });
 
         supabaseClient.auth.onAuthStateChange((_event, session) => updateAuthUI(session));
@@ -1554,7 +1608,8 @@
 
     async function registerUser() {
       if (!supabaseClient) {
-        $("authMessage").textContent = "La autenticación no está disponible. Revisa la configuración de Supabase.";
+        $("authMessage").textContent =
+          "La autenticación no está disponible. Revisa la configuración de Supabase.";
         return;
       }
 
@@ -1597,7 +1652,8 @@
 
     async function loginUser() {
       if (!supabaseClient) {
-        $("authMessage").textContent = "La autenticación no está disponible. Revisa la configuración de Supabase.";
+        $("authMessage").textContent =
+          "La autenticación no está disponible. Revisa la configuración de Supabase.";
         return;
       }
 
@@ -1641,6 +1697,12 @@
 
     function bindEvents() {
       $("exerciseSelect").addEventListener("change", renderRecoveryInfo);
+
+      // Al cambiar de carpeta, se actualiza la lista de ejercicios.
+      $("exerciseGroupSelect").addEventListener("change", () => {
+        renderExerciseSelect();
+      });
+
       $("addSetBtn").addEventListener("click", addSet);
       $("addExerciseBtn").addEventListener("click", addExerciseToCurrent);
       $("saveWorkoutBtn").addEventListener("click", saveWorkout);
