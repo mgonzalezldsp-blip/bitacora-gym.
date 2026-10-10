@@ -357,7 +357,6 @@
       margin-bottom: 14px;
     }
 
-    /* Carpetas de recuperación */
     .muscle-folder {
       background: #121212;
       border: 1px solid var(--line);
@@ -391,14 +390,8 @@
     }
 
     .folder-info { flex: 1; min-width: 0; }
-
     .folder-title { font-weight: 850; font-size: 14px; }
-
-    .folder-count {
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: 3px;
-    }
+    .folder-count { color: var(--muted); font-size: 11px; margin-top: 3px; }
 
     .folder-arrow {
       color: var(--muted);
@@ -611,7 +604,7 @@
     <section class="view" id="view-ajustes">
       <div class="panel">
         <h2>Cuenta</h2>
-        <p class="muted small">La autenticación utiliza Supabase. En esta versión, los entrenamientos se guardan en este navegador y no se sincronizan automáticamente entre dispositivos.</p>
+        <p class="muted small">La autenticación utiliza Supabase. Los entrenamientos se guardan en este navegador y todavía no se sincronizan automáticamente entre dispositivos.</p>
 
         <div class="auth-box">
           <div class="field">
@@ -926,8 +919,13 @@
       ).join("");
     }
 
-    // Selector por carpeta: solo muestra los ejercicios del grupo elegido.
-    function renderExerciseSelect() {
+    /*
+     * CORRECCIÓN:
+     * forceSelectedGroup = true significa que el usuario cambió manualmente
+     * la carpeta. En ese caso NO se selecciona otra vez el grupo del ejercicio
+     * que estaba elegido anteriormente.
+     */
+    function renderExerciseSelect(forceSelectedGroup = false) {
       const groupSelect = $("exerciseGroupSelect");
       const exerciseSelect = $("exerciseSelect");
 
@@ -948,7 +946,7 @@
         return `<option value="${escapeHtml(group)}">${escapeHtml(group)} (${count})</option>`;
       }).join("");
 
-      const previousExerciseStillExists = data.exercises.find(
+      const previousExerciseData = data.exercises.find(
         ex => ex.id === previousExercise
       );
 
@@ -956,8 +954,10 @@
         ? previousGroup
         : groupsWithExercises[0];
 
-      if (previousExerciseStillExists) {
-        selectedGroup = normaliseGroup(previousExerciseStillExists.group);
+      // Solo sigue al grupo del ejercicio anterior durante actualizaciones
+      // normales, nunca cuando el usuario cambia la carpeta manualmente.
+      if (!forceSelectedGroup && previousExerciseData) {
+        selectedGroup = normaliseGroup(previousExerciseData.group);
       }
 
       if (selectedGroup) {
@@ -968,14 +968,19 @@
         .filter(ex => normaliseGroup(ex.group) === groupSelect.value)
         .sort((a, b) => a.name.localeCompare(b.name, "es"));
 
-      exerciseSelect.innerHTML = exercisesInGroup.length
-        ? exercisesInGroup.map(ex =>
-            `<option value="${escapeHtml(ex.id)}">${escapeHtml(ex.name)}</option>`
-          ).join("")
-        : '<option value="">No hay ejercicios en esta carpeta</option>';
+      if (exercisesInGroup.length > 0) {
+        exerciseSelect.innerHTML = exercisesInGroup.map(ex =>
+          `<option value="${escapeHtml(ex.id)}">${escapeHtml(ex.name)}</option>`
+        ).join("");
 
-      if (exercisesInGroup.some(ex => ex.id === previousExercise)) {
-        exerciseSelect.value = previousExercise;
+        if (exercisesInGroup.some(ex => ex.id === previousExercise)) {
+          exerciseSelect.value = previousExercise;
+        } else {
+          exerciseSelect.selectedIndex = 0;
+        }
+      } else {
+        exerciseSelect.innerHTML =
+          '<option value="">No hay ejercicios en esta carpeta</option>';
       }
 
       renderRecoveryInfo();
@@ -1698,9 +1703,10 @@
     function bindEvents() {
       $("exerciseSelect").addEventListener("change", renderRecoveryInfo);
 
-      // Al cambiar de carpeta, se actualiza la lista de ejercicios.
+      // CORRECCIÓN PRINCIPAL:
+      // Fuerza a respetar la carpeta seleccionada manualmente.
       $("exerciseGroupSelect").addEventListener("change", () => {
-        renderExerciseSelect();
+        renderExerciseSelect(true);
       });
 
       $("addSetBtn").addEventListener("click", addSet);
